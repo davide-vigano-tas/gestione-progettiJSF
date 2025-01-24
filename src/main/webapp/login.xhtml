@@ -28,23 +28,22 @@
 			<f:facet name="subtitle">
 				Inserire i dati per il login
 			</f:facet>
-							<!-- Il form va agganciato al modello --><!-- RequiredMessage, nel caso il dato non viene inserito. validatorMessage 
-				quando non passa la validazion-->
+							
 			<p:panelGrid columns="3" layout="grid"
 					columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-4">
 
 				<p:outputLabel for="username" value="Username"/>	
-				<p:inputMask id="username" required="true" value="#{userSessionBean.username}"
-					requiredMessage="Username richiesto" validatorMessage="Username non valido">
-					<f:validateRegex pattern="^[a-zA-Z0-9!.-]{4,10}$"></f:validateRegex>
-				</p:inputMask>
+				<p:inputText id="username" required="true" value="#{userSessionBean.username}"
+					requiredMessage="Username richiesto" feedback="true">
+					
+				</p:inputText>
 				<p:message for="username" display="text" style="width: 100%"/>
 	
 				<p:outputLabel for="password" value="Password"/>	
 				<p:password id="password" required="true" value="#{userSessionBean.password}" feedback="true"
-					promptLabel="Inserisci una password" weakLabel="Debole" strongLabel="Forte" goodLabel="Buona"
-					requiredMessage="Password richiesta" validatorMessage="Password non valida">
-					<f:validateRegex pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^?!=])[a-zA-Z0-9@#$%^?!=]{7,15}$"></f:validateRegex>
+					promptLabel="Inserisci una password" 
+					requiredMessage="Password richiesta" >
+				
 				</p:password>
 				<p:message for="password" display="text" style="width: 100%"/>
 			
@@ -57,7 +56,7 @@
 			<f:facet name="footer">
 
 			<p:commandButton icon="pi pi-check" action="#{userSessionBean.validate()}" value="Login"
-			   update="LoginForm" styleClass="ui-button-outlined"/>
+			   update="username password userType" styleClass="ui-button-outlined"/>
 		
 			</f:facet>
 		</p:card>

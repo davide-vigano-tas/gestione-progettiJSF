@@ -57,6 +57,8 @@ public class UserSessionBean implements Serializable {
 	}
 
 	public String getUsername() {
+
+		System.err.println("Used?? get username "+username);
 		return username;
 	}
 
@@ -82,10 +84,10 @@ public class UserSessionBean implements Serializable {
 		try {
 			AdminFacadeBean userBean = new AdminFacadeBean();
 			User user = userBean.getByUsername(username);
-			System.err.println("Login?");
+			
 			if(user!=null) {
 				if(Algoritmo.verificaPassword(password, user.getPassword())) {
-					
+					System.err.println("Login?");
 					List<Role> roles = Arrays.asList(userBean.getRolesById(user.getId()));
 					if(roles.stream().anyMatch(r -> r.getRole().equals(Ruoli.CLIENTE)) && userType.equals(Ruoli.CLIENTE.name())) {
 						return "cliente/cliente-home";
@@ -167,6 +169,7 @@ public class UserSessionBean implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+		System.err.println("Used?? Password");
 	}
 	
 }
