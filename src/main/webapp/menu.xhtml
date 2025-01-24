@@ -14,7 +14,7 @@
 			<p:divider layout="vertical" />
 
 			<!-- Menu per utenti non autenticati -->
-			<p:menuitem value="Sign up" icon="pi pi-user-plus" outcome="/registrazione.xhtml"/>
+			<p:menuitem value="Sign up" icon="pi pi-user-plus" />
 			<p:menuitem value="Login" icon="pi pi-sign-in" outcome="/login.xhtml" />
 
 			<f:facet name="end">
@@ -30,7 +30,7 @@
 		<c:if test="#{userSessionBean.username != null}">
 			<!-- Menu per utenti autenticati -->
 			<c:if test="#{userSessionBean.hasRole('CLIENTE')}">
-				<p:submenu label="Cliente" icon="pi pi-user"
+				<p:submenu label="#{userSessionBean.username}" icon="pi pi-user"
 					styleClass="custom-submenu">
 					<p:menuitem value="Home" outcome="/cliente/cliente-home.xhtml" />
 					<p:menuitem value="I tuoi pagamenti"
@@ -39,7 +39,7 @@
 			</c:if>
 
 			<c:if test="#{userSessionBean.hasRole('DIPENDENTE')}">
-				<p:submenu label="Dipendente" icon="pi pi-briefcase"
+				<p:submenu label="#{userSessionBean.username}" icon="pi pi-briefcase"
 					styleClass="custom-submenu">
 					<p:menuitem value="Tasks" outcome="/dipendente/dip-tasks.xhtml" />
 					<p:menuitem value="Timesheets"
@@ -53,7 +53,7 @@
 			</c:if>
 
 			<c:if test="#{userSessionBean.hasRole('PROJECT_MANAGER')}">
-				<p:submenu label="Project Manager" icon="pi pi-users"
+				<p:submenu label="#{userSessionBean.username}" icon="pi pi-users"
 					styleClass="custom-submenu">
 					<p:menuitem value="Dipendenti"
 						outcome="/projectManager/dipendenti.xhtml" />
@@ -69,7 +69,7 @@
 			</c:if>
 
 			<c:if test="#{userSessionBean.hasRole('ADMIN')}">
-				<p:submenu label="Admin" icon="pi pi-lock"
+				<p:submenu label="userSessionBean.username" icon="pi pi-lock"
 					styleClass="custom-submenu">
 					<p:menuitem value="Skills" outcome="/admin/skills.xhtml" />
 					<p:menuitem value="Utenti" outcome="/admin/users.xhtml" />
@@ -82,8 +82,6 @@
 			</c:if>
 
 			<!-- Logout -->
-			<p:menuitem value="#{userSessionBean.username}" disabled="true"
-				styleClass="menu-text" icon="pi pi-user" />
 			<p:menuitem value="Logout" outcome="/logout.xhtml"
 				icon="pi pi-power-off" />
 		</c:if>

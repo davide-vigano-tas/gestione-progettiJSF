@@ -1,114 +1,135 @@
 package eu.tasgroup.gestione.web.bean;
 
-import java.util.Date;
+import java.io.Serializable;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.NamingException;
 
 import eu.tasgroup.gestione.architetture.dao.DAOException;
-import eu.tasgroup.gestione.businesscomponent.AuditLogBC;
-import eu.tasgroup.gestione.businesscomponent.PaymentBC;
-import eu.tasgroup.gestione.businesscomponent.ProjectBC;
-import eu.tasgroup.gestione.businesscomponent.UserBC;
-import eu.tasgroup.gestione.businesscomponent.enumerated.Ruoli;
-import eu.tasgroup.gestione.businesscomponent.model.AuditLog;
+import eu.tasgroup.gestione.businesscomponent.facade.ClienteFacade;
 import eu.tasgroup.gestione.businesscomponent.model.Payment;
 import eu.tasgroup.gestione.businesscomponent.model.Project;
 import eu.tasgroup.gestione.businesscomponent.model.Role;
 import eu.tasgroup.gestione.businesscomponent.model.User;
 
 @Named
-@RequestScoped
-public class ClienteFacadeBean {
+@SessionScoped
+public class ClienteFacadeBean implements Serializable {
 
-    
-    private UserBC userBC;
-    
-    private ProjectBC projectBC;
-    
-    private PaymentBC paymentBC;
-   
-    private AuditLogBC auditLogBC;
-    
-    public ClienteFacadeBean() throws DAOException, NamingException {
-    	userBC = new UserBC();
-    	projectBC = new ProjectBC();
-    	paymentBC = new PaymentBC();
-    	auditLogBC = new AuditLogBC();
-    }
+	private static final long serialVersionUID = 4615242297710114833L;
 
-    public String createOrUpdateCliente(User user) throws DAOException, NamingException {
-    	System.out.println("Called");
-        User created = userBC.createOrUpdate(user);
-        if (user.getId() == 0) {
-            Role role = new Role();
-            role.setRole(Ruoli.CLIENTE);
-            userBC.addRole(created, role);
-        }
-        return "login?i=2&faces-redirect=true";
-    }
+	private ClienteFacade cf;
+	private User user;
+	private Project project;
+	private Payment payment;
+	private List<Project> projects;
 
-    public User getById(long id) throws DAOException, NamingException {
-        return userBC.getById(id);
-    }
+	@Inject
+	private UserSessionBean userSessionBean;
 
-    public User getByUsername(String username) throws DAOException, NamingException {
-        return userBC.getByUsername(username);
-    }
+	public ClienteFacadeBean() throws DAOException, NamingException {
+		cf = ClienteFacade.getInstance();
+	}
 
-    public User getByEmail(String email) throws DAOException, NamingException {
-        return userBC.getByEmail(email);
-    }
+	@PostConstruct
+	public void init() {
+		try {
+			this.user = getByUsername(userSessionBean.getUsername());
+			this.projects = getProjectsByCliente(user);
+		} catch (DAOException | NamingException e) {
+			e.printStackTrace();
+		}
+	}
 
-    public int getPercentualeCompletamentoProjectID(long id) throws DAOException, NamingException {
-        return projectBC.getPercentualeCompletamento(id);
-    }
+	public User createOrUpdateCliente(User user) throws DAOException, NamingException {
+		return cf.createOrUpdateCliente(user);
+	}
 
-    public Project getProjectById(long id) throws DAOException, NamingException {
-        return projectBC.getById(id);
-    }
+	public User getById(long id) throws DAOException, NamingException {
+		return cf.getById(id);
+	}
 
-    public List<Project> getProjectsByCliente(User user) throws DAOException, NamingException {
-        return projectBC.getListProjectByCliente(user.getId());
-    }
+	public User getByUsername(String username) throws DAOException, NamingException {
+		return cf.getByUsername(username);
+	}
 
-    public void createPayment(Payment payment) throws DAOException, NamingException {
-        paymentBC.create(payment);
-    }
+	public User getByEmail(String email) throws DAOException, NamingException {
+		return cf.getByEmail(email);
+	}
 
-    public Payment getPaymentById(long id) throws DAOException, NamingException {
-        return paymentBC.getById(id);
-    }
+	public int getPercentualeCompletamentoProjectID(long id) throws DAOException, NamingException {
+		return cf.getPercentualeCompletamentoProjectID(id);
+	}
 
-    public Payment[] getPaymentByProject(Project project) throws DAOException, NamingException {
-        return paymentBC.getByProject(project);
-    }
+	public Project getProjectById(long id) throws DAOException, NamingException {
+		return cf.getProjectById(id);
+	}
 
-    public Payment[] getPaymentByCliente(User cliente) throws DAOException, NamingException {
-        return paymentBC.getByUser(cliente);
-    }
+	public List<Project> getProjectsByCliente(User user) throws DAOException, NamingException {
+		return cf.getProjectsByCliente(user);
+	}
 
-    public Role[] getRolesById(long id) throws DAOException, NamingException {
-        return userBC.getRolesById(id);
-    }
+	public void createPayment(Payment payment) throws DAOException, NamingException {
+		cf.createPayment(payment);
+	}
 
-    public double getTotalPaymentsByProjectId(long id) throws DAOException, NamingException {
-        Project p = projectBC.getById(id);
-        Payment[] payments = paymentBC.getByProject(p);
-        double totale = 0;
-        for (Payment payment : payments) {
-            totale += payment.getCifra();
-        }
-        return totale;
-    }
+	public Payment getPaymentById(long id) throws DAOException, NamingException {
+		return cf.getPaymentById(id);
+	}
 
-    public void saveLogMessage(String username, String operazione) throws DAOException, NamingException {
-        AuditLog log = new AuditLog();
-        log.setUtente(username);
-        log.setOperazione(operazione);
-        log.setData(new Date());
-        auditLogBC.createOrUpdate(log);
-    }
+	public Payment[] getPaymentByProject(Project project) throws DAOException, NamingException {
+		return cf.getPaymentByProject(project);
+	}
+
+	public Payment[] getPaymentByCliente(User cliente) throws DAOException, NamingException {
+		return cf.getPaymentByCliente(cliente);
+	}
+
+	public Role[] getRolesById(long id) throws DAOException, NamingException {
+		return cf.getRolesById(id);
+	}
+
+	public double getTotalPaymentsByProjectId(long id) throws DAOException, NamingException {
+		return cf.getTotalPaymentsByProjectId(id);
+	}
+
+	public void saveLogMessage(String username, String operazione) throws DAOException, NamingException {
+		cf.saveLogMessage(username, operazione);
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
+	public Payment getPayment() {
+		return payment;
+	}
+
+	public void setPayment(Payment payment) {
+		this.payment = payment;
+	}
+
+	public List<Project> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(List<Project> projects) throws DAOException, NamingException {
+		this.projects = projects;
+	}
 }

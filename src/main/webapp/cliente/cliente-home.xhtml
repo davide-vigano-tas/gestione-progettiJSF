@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Tas Home</title>
+	<h:outputStylesheet name="css/style.css" />
+	<!-- PrimeFaces CSS per un miglior design -->
+	<h:outputStylesheet
+		name="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</h:head>
+
+<h:body>
+
+	<ui:include src="/menu.xhtml" />
+
+
+
+	<!-- Container principale -->
+	<div class="container"
+		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+
+		<!-- Card Benvenuto -->
+		<p:panel header="Benvenuto, #{clienteFacadeBean.user.username}"
+			styleClass="card shadow-sm mt-5">
+			<p:panelGrid columns="2" columnClasses="col-md-6,col-md-6"
+				styleClass="row mb-3">
+				<h:outputText value="Nome:" />
+				<h:outputText value="#{clienteFacadeBean.user.nome}" />
+				<h:outputText value="Cognome:" />
+				<h:outputText value="#{clienteFacadeBean.user.cognome}" />
+				<h:outputText value="Username:" />
+				<h:outputText value="#{clienteFacadeBean.user.username}" />
+				<h:outputText value="Email:" />
+				<h:outputText value="#{clienteFacadeBean.user.email}" />
+				<h:outputText value="Tentativi Errati:" />
+				<h:outputText value="#{clienteFacadeBean.user.tentativiFalliti}" />
+				<h:outputText value="Account Bloccato:" />
+				<h:outputText value="#{clienteFacadeBean.user.locked}" />
+				<h:outputText value="Data Creazione:" />
+				<h:outputText value="#{clienteFacadeBean.user.dataCreazione}" />
+			</p:panelGrid>
+		</p:panel>
+	</div>
+
+	<!-- Progetti Associati -->
+	<p:panel styleClass="card shadow-sm mt-5">
+		<f:facet name="header">
+			<h4>Progetti Associati</h4>
+		</f:facet>
+		<p:commandButton value="Mostra/Nascondi Tabella"
+			styleClass="btn btn-link" icon="pi pi-chevron-down"
+			update="projectsTableContainer" onstart="toggleProjectsTable()" />
+		
+		<p:dataTable id="projectsTableContainer" var="project"
+			value="#{clienteFacadeBean.projects}" styleClass="table table-hover">
+			<p:column headerText="ID">
+				<h:outputText value="#{project.id}" />
+			</p:column>
+			<p:column headerText="Nome">
+				<h:outputText value="#{project.nomeProgetto}" />
+			</p:column>
+			<p:column headerText="Stato">
+				<h:outputText value="#{project.stato}" />
+			</p:column>
+			<p:column headerText="Progressi">
+				<p:progressBar value="#{project.percentualeCompletamento}"
+					style="height: 15px; margin-top: 6px;" />
+			</p:column>
+			<p:column headerText="Fine Prevista">
+				<h:outputText value="#{project.dataFine}" />
+			</p:column>
+			<p:column headerText="Da versare">
+				<h:outputText
+					value="#{project.costoProgetto - userController.getTotalPaymentsByProjectId(project.id)}" />
+			</p:column>
+		</p:dataTable>
+	</p:panel>
+
+	<ui:include src="/footer.xhtml" />
+
+</h:body>
+</html>
