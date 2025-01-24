@@ -1,0 +1,26 @@
+html {
+	scrollbar.width: none;/*firefox*/
+	-ms-overflow-style: none; /*microsoft exlorer/edge*/
+	
+}
+
+
+/*Pre la scrollbar di chrome*/
+/*Bisogna farlo a livello globale*/
+::-webkit-scrollbar {
+	display: none;
+}
+
+
+
+body {
+	font-size: 16px !important;
+	font-family: Helvetica;
+}
+
+
+.container {
+	
+	margin: 50px;
+}
+

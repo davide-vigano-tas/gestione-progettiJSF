@@ -24,14 +24,21 @@ import eu.tasgroup.gestione.businesscomponent.model.User;
 @RequestScoped
 public class ClienteFacadeBean {
 
-    @Inject
+    
     private UserBC userBC;
-    @Inject
+    
     private ProjectBC projectBC;
-    @Inject
+    
     private PaymentBC paymentBC;
-    @Inject
+   
     private AuditLogBC auditLogBC;
+    
+    public ClienteFacadeBean() throws DAOException, NamingException {
+    	userBC = new UserBC();
+    	projectBC = new ProjectBC();
+    	paymentBC = new PaymentBC();
+    	auditLogBC = new AuditLogBC();
+    }
 
     public User createOrUpdateCliente(User user) throws DAOException, NamingException {
         User created = userBC.createOrUpdate(user);
