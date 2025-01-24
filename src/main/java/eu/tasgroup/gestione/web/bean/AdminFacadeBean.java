@@ -42,7 +42,7 @@ public class AdminFacadeBean {
 	private TimesheetBC timesheetBC;
 	private AuditLogBC auditLogBC;
 	private TicketBC ticketBC;
-	private AdminFacadeBean() throws DAOException, NamingException {
+	public AdminFacadeBean() throws DAOException, NamingException {
 		
 		userBC = new UserBC();
 		projectBC = new ProjectBC();
@@ -54,11 +54,7 @@ public class AdminFacadeBean {
 		ticketBC = new TicketBC();
 	}
 	
-	public static AdminFacadeBean getInstance() throws DAOException, NamingException {
-		if(af == null) 
-			af = new AdminFacadeBean();
-		return af;
-	}
+	
 	
 	public User createUser(User user) throws DAOException, NamingException {
 		return userBC.createOrUpdate(user);
