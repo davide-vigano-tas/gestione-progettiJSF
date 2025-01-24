@@ -40,6 +40,7 @@ public class ClienteFacadeBean implements Serializable {
 		try {
 			this.user = getByUsername(userSessionBean.getUsername());
 			this.projects = getProjectsByCliente(user);
+			this.payment = new Payment();
 		} catch (DAOException | NamingException e) {
 			e.printStackTrace();
 		}
@@ -132,4 +133,16 @@ public class ClienteFacadeBean implements Serializable {
 	public void setProjects(List<Project> projects) throws DAOException, NamingException {
 		this.projects = projects;
 	}
+	
+	public void confirmPayment() throws DAOException, NamingException {
+		cf.createPayment(payment);
+	}
+	
+	public void preparePaymentModal(Project project) {
+	    this.payment = new Payment(); // O un'istanza preesistente
+	    this.payment.setIdProgetto(project.getId());
+	    this.payment.setCifra(project.getCostoProgetto());
+	    this.project = project; // Per nome e altri dettagli
+	}
+
 }

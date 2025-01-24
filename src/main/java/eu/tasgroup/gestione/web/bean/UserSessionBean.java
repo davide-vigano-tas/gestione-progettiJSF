@@ -77,7 +77,6 @@ public class UserSessionBean implements Serializable {
 			User user = userBean.getByUsername(username);
 			if (user != null) {
 				if (Algoritmo.verificaPassword(password, user.getPassword())) {
-					System.err.println("Login?");
 					List<Role> roles = Arrays.asList(userBean.getRolesById(user.getId()));
 					if (roles.stream().anyMatch(r -> r.getRole().equals(Ruoli.CLIENTE))
 							&& userType.equals(Ruoli.CLIENTE.name())) {

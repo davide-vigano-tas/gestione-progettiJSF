@@ -55,7 +55,6 @@ public class User implements Serializable {
 	}
 	@XmlElement
 	public void setUsername(String username) {
-		System.out.println("Username set "+username);
 		this.username = username;
 	}
 
