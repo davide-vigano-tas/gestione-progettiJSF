@@ -33,7 +33,6 @@ import eu.tasgroup.gestione.businesscomponent.model.User;
 @RequestScoped
 public class AdminFacadeBean {
 
-	private static AdminFacadeBean af;
 	private UserBC userBC;
 	private ProjectBC projectBC;
 	private PaymentBC paymentBC;

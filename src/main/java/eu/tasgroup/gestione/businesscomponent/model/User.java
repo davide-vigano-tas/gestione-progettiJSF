@@ -4,6 +4,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+@ViewScoped
+@Named
+//Se li voglio in xml
+@XmlRootElement(name="user")
 public class User implements Serializable {
 
 	private static final long serialVersionUID = -2509070297267526051L;
@@ -29,7 +37,7 @@ public class User implements Serializable {
 	public String getNome() {
 		return nome;
 	}
-
+	@XmlElement
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
@@ -37,7 +45,7 @@ public class User implements Serializable {
 	public String getCognome() {
 		return cognome;
 	}
-
+	@XmlElement
 	public void setCognome(String cognome) {
 		this.cognome = cognome;
 	}
@@ -45,15 +53,16 @@ public class User implements Serializable {
 	public String getUsername() {
 		return username;
 	}
-
+	@XmlElement
 	public void setUsername(String username) {
+		System.out.println("Username set "+username);
 		this.username = username;
 	}
 
 	public String getPassword() {
 		return password;
 	}
-
+	@XmlElement
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -61,7 +70,7 @@ public class User implements Serializable {
 	public String getEmail() {
 		return email;
 	}
-
+	@XmlElement
 	public void setEmail(String email) {
 		this.email = email;
 	}

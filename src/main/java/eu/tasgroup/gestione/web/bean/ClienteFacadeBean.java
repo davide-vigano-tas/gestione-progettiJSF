@@ -39,14 +39,15 @@ public class ClienteFacadeBean {
     	auditLogBC = new AuditLogBC();
     }
 
-    public User createOrUpdateCliente(User user) throws DAOException, NamingException {
+    public String createOrUpdateCliente(User user) throws DAOException, NamingException {
+    	System.out.println("Called");
         User created = userBC.createOrUpdate(user);
         if (user.getId() == 0) {
             Role role = new Role();
             role.setRole(Ruoli.CLIENTE);
             userBC.addRole(created, role);
         }
-        return created;
+        return "login?i=2&faces-redirect=true";
     }
 
     public User getById(long id) throws DAOException, NamingException {

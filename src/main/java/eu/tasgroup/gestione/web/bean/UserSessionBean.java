@@ -58,13 +58,11 @@ public class UserSessionBean implements Serializable {
 
 	public String getUsername() {
 
-		System.err.println("Used?? get username "+username);
 		return username;
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
-		System.err.println("Used??");
 	}
 
 
@@ -87,7 +85,6 @@ public class UserSessionBean implements Serializable {
 			
 			if(user!=null) {
 				if(Algoritmo.verificaPassword(password, user.getPassword())) {
-					System.err.println("Login?");
 					List<Role> roles = Arrays.asList(userBean.getRolesById(user.getId()));
 					if(roles.stream().anyMatch(r -> r.getRole().equals(Ruoli.CLIENTE)) && userType.equals(Ruoli.CLIENTE.name())) {
 						return "cliente/cliente-home";
