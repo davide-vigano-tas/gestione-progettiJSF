@@ -1,72 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
-
-  <h:head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>Tas home</title>
-<h:outputStylesheet name="css/style.css"/>
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Tas Home</title>
+	<h:outputStylesheet name="css/style.css" />
+	<!-- PrimeFaces CSS per un miglior design -->
+	<h:outputStylesheet
+		name="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </h:head>
+
 <h:body>
-<ui:include src="/menu.xhtml" />
-<div class="container">
-    <!-- Add a heading for context -->
-    <h2>Tas Home</h2>
-    
-    <!-- Styled login button -->
-    <h:commandButton 
-        value="Login" 
-        action="login?faces-redirect=true" 
-        styleClass="btn btn-primary" 
-        title="Click to log in"
-    />
-</div>
+	<ui:include src="/menu.xhtml" />
 
-<!-- Example CSS for styling -->
-<style>
-    .container {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        padding: 20px;
-        background-color: #f8f9fa;
-        font-family: Arial, sans-serif;
-        text-align: center;
-    }
+	<!-- Container principale -->
+	<div class="container"
+		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
 
-    .container h2 {
-        margin-bottom: 20px;
-        color: #333;
-    }
+		<!-- Heading -->
+		<h2 class="page-title"
+			style="text-align: center; font-size: 2rem; margin-bottom: 2rem;">
+			Seleziona il tuo ruolo</h2>
+		<div style="text-align: center; width: 100%">
+			<p>
+				<p:button value="Admin" styleClass="ui-button-outlined"
+					style="width: 100%;" />
+			</p>
+			<p>
+				<p:button value="Project - Manager" styleClass="ui-button-outlined"
+					style="width: 100%;" />
+			</p>
+			<p>
+				<p:button value="Dipendente" styleClass="ui-button-outlined"
+					style="width: 100%;" />
+			</p>
+			<p>
+				<p:button value="Cliente" styleClass="ui-button-outlined"
+					style="width: 100%;" />
+			</p>
+		</div>
+	</div>
 
-    .btn {
-        padding: 10px 20px;
-        font-size: 16px;
-        border: none;
-        border-radius: 5px;
-        width: 100px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
+	<ui:include src="/footer.xhtml" />
 
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-    }
-</style>
-
-
-   
-        <ui:include src="/footer.xhtml" />
-    
 </h:body>
 </html>
