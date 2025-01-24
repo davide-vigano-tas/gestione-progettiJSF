@@ -10,5 +10,8 @@
     		eu.tasgroup.gestione.conf.CustomExceptionHandlerFactory
     	</exception-handler-factory>
     </factory>
-
+ <protected-views>
+    <url-pattern>/*/**.xhtml</url-pattern>
+    <url-pattern>/*.xhtml</url-pattern>
+  </protected-views>
 </faces-config>

@@ -1,11 +1,14 @@
 package eu.tasgroup.gestione.web.bean;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.NamingException;
@@ -30,8 +33,9 @@ public class AdminFacadeBean {
 
 	private AdminFacade af;
 	private User logged;
-	
-	
+	private String optionValue;
+	private String errorMessage;
+	private List<User> users;
 	
 	@Inject
 	private UserSessionBean userSessionBean;
@@ -39,8 +43,20 @@ public class AdminFacadeBean {
 	@PostConstruct
 	public void init() {
 		try {
+			 FacesContext facesContext = FacesContext.getCurrentInstance();
 			this.logged = getByUsername(userSessionBean.getUsername());
-	
+		    String option = facesContext.getExternalContext().getRequestParameterMap().get("option");
+	        if (option != null) {
+	            optionValue = option;
+	        }
+	        users = Arrays.asList(getAllUsers());
+	        System.err.println(users.get(0));
+	        String error = facesContext.getExternalContext().getRequestParameterMap().get("error");
+	        if ("username_taken".equals(error)) {
+	            errorMessage = "Username già in uso";
+	        } else if ("email_taken".equals(error)) {
+	            errorMessage = "Email già in uso";
+	        }
 		} catch (DAOException | NamingException e) {
 			e.printStackTrace();
 		}
@@ -51,15 +67,44 @@ public class AdminFacadeBean {
 	
 	
 	
+	public String getOptionValue() {
+		return optionValue;
+	}
+	public void setOptionValue(String optionValue) {
+		this.optionValue = optionValue;
+	}
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	public List<User> getUsers() {
+		return users;
+	}
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+	public UserSessionBean getUserSessionBean() {
+		return userSessionBean;
+	}
+	public void setUserSessionBean(UserSessionBean userSessionBean) {
+		this.userSessionBean = userSessionBean;
+	}
 	public User getLogged() {
 		return logged;
 	}
 	public void setLogged(User logged) {
 		this.logged = logged;
 	}
-	public User createUser(User user) throws DAOException, NamingException {
-		return af.createUser(user);
+	public void createUser(User user) throws IOException, DAOException, NamingException {
+	 
+	       af.createUser(user);
+	        // Redirect to another page
+	        FacesContext.getCurrentInstance().getExternalContext().redirect("/"+UserSessionBean.getServletContextName()+"/admin/users.xhtml");
+	   
 	}
+
 	
 	/*------------------------------------Tutti gli utenti*/
 	public User[] getAllUsers() throws DAOException, NamingException {
@@ -121,6 +166,15 @@ public class AdminFacadeBean {
 	/*--------------------------------Ruoli di un utente*/
 	public Role[] getRolesByUsername(String username) throws DAOException, NamingException {
 		return af.getRolesByUsername(username);
+	}
+	
+	public String getRolesString(String username) throws DAOException, NamingException {
+		String roles = "";
+		for(Role r: getRolesByUsername(username)) {
+			roles += r.getRole().name()+" ";
+		
+		}
+		return roles;
 	}
 	/*--------------------------------Ruoli di un utente*/
 	public Role[] getRolesById(long id) throws DAOException, NamingException {

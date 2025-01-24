@@ -12,6 +12,7 @@ import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 
 import eu.tasgroup.gestione.architetture.dao.DAOException;
 import eu.tasgroup.gestione.businesscomponent.enumerated.Ruoli;
@@ -154,7 +155,7 @@ public class UserSessionBean implements Serializable {
 		username = null;
 		setPassword(null);
 		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().redirect("login.xhtml?faces-redirect=true");
+		context.getExternalContext().redirect("/"+getServletContextName()+"/login.xhtml?faces-redirect=true");
 	}
 
 	public String getPassword() {
@@ -163,5 +164,11 @@ public class UserSessionBean implements Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public static String getServletContextName() {
+	    FacesContext facesContext = FacesContext.getCurrentInstance();
+	    ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
+	    return servletContext.getServletContextName();
 	}
 }

@@ -5,7 +5,10 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-
+	
+	 <f:metadata>
+    <f:viewAction action="#{userSessionBean.isNotLoggedRedirect()}" />
+</f:metadata>
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Admin Home</title>
@@ -23,6 +26,106 @@
 	<!-- Container principale -->
 	<div class="container"
 		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+ <h:form id="q_form">
+            <h:panelGrid columns="2">
+                <p:outputLabel value="Search Non-Assigned Employees:" />
+                <p:commandButton value="Search" icon="fas fa-search" action="#{adminFacadeBean.init}" update="usersTable" />
+            </h:panelGrid>
+        </h:form>
+
+        <p:message for="q_form" />
+
+        <!-- Error Message -->
+        <h:panelGroup rendered="#{not empty adminFacadeBean.errorMessage}">
+            <p:outputPanel id="error" styleClass="alert alert-danger">
+                #{adminFacadeBean.errorMessage}
+            </p:outputPanel>
+        </h:panelGroup>
+
+        <!-- Users Table -->
+        <p:dataTable id="usersTable" value="#{adminFacadeBean.users}" var="u" rows ="5"
+						paginator="true" paginatorPosition="bottom"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     rowsPerPageTemplate="3,5,{ShowAll|'All'}">
+                     
+            <p:column headerText="Username" >
+                <h:outputText value="#{u.username}" />
+            </p:column>
+            <p:column headerText="Email" >
+                <h:outputText value="#{u.email}" />
+            </p:column>
+             <p:column headerText="Ruoli" >
+                <h:outputText value="#{adminFacadeBean.getRolesString(u.username)}" />
+            </p:column>
+            <p:column style="width: 20%">
+                <p:commandLink value="Details" icon="fas fa-user" action="dettagliUtente" update="usersTable" />
+            </p:column>
+        </p:dataTable>
+
+        <!-- Add User Button -->
+        <p:commandButton value="Add Employee" icon="fas fa-user-plus" styleClass="ui-button-success" update=":addUserModal" 
+					                     oncomplete="PF('addUserModal').show()" />
+
+
+
+    <p:dialog header="Inserisci Utente" widgetVar="addUserModal" modal="true"  id="addUserModal" resizable="false" width="800px">
+        <h:form id="formModal">
+            <!-- CSRF Token -->
+              <p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-2 ui-grid-col-4 ui-grid-col-4">
+
+            <p:outputLabel for="nome" value="Nome" />
+            <p:inputText id="nome" value="#{user.nome}" required="true" requiredMessage="Il campo nome non può essere vuoto"
+                         label="Nome">
+                <f:validateRegex pattern="^[a-zA-Z ,.'\-]{2,30}$" />
+            </p:inputText>
+            <p:message for="nome" display="text" style="width: 100%"/>
+
+       
+            <p:outputLabel for="cognome" value="Cognome" />
+            <p:inputText id="cognome" value="#{user.cognome}" required="true" requiredMessage="Il campo cognome non può essere vuoto"
+                         label="Cognome">
+                <f:validateRegex pattern="^[a-zA-Z ,.'\-]{2,30}$" />
+            </p:inputText>
+            <p:message for="cognome" display="text" style="width: 100%" />
+
+       
+            <p:outputLabel for="username" value="Username" />
+            <p:inputText id="username" value="#{user.username}" required="true" requiredMessage="Il campo username non può essere vuoto"
+                         label="Username" maxlength="10">
+                <f:validateRegex pattern="^[a-zA-Z0-9!.-]{4,10}$" />
+            </p:inputText>
+            <p:message for="username" display="text" style="width: 100%"/>
+
+            
+            <p:outputLabel for="password" value="Password" />
+            <p:password id="password" value="#{user.password}" required="true" requiredMessage="La password non può essere vuota"
+                         label="Password">
+                <f:validateRegex pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^?!=])[a-zA-Z0-9@#$%^?!=]{7,15}$" />
+            </p:password>
+            <p:message for="password" display="text" style="width: 100%"/>
+
+       
+            <p:outputLabel for="email" value="Email" />
+            <p:inputText id="email" value="#{user.email}" required="true" requiredMessage="Il campo email non può essere vuoto"
+                         label="Email">
+                <f:validateRegex pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" />
+            </p:inputText>
+            <p:message for="email" display="text" style="width: 100%"/>
+
+            <p:outputLabel for="userType" value="Tipo" />
+			    <p:selectOneMenu id="userType" value="#{userSessionBean.userType}">
+			        <f:selectItems value="#{userSessionBean.roles}" var="userType" itemLabel="#{userType}" itemValue="#{userType}" />
+			    </p:selectOneMenu>
+            <p:message for="userType" display="text" style="width: 100%"/>
+
+      
+           
+            <p:commandButton value="Salva" action="#{adminFacadeBean.createUser(user)}"  update=":formModal" icon="fa fa-save" styleClass="ui-button-success" />
+            </p:panelGrid>
+        </h:form>
+    </p:dialog>
+
 
   </div>
 
