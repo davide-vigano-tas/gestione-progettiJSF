@@ -49,6 +49,10 @@ public class ClienteFacadeBean implements Serializable {
 	public User createOrUpdateCliente(User user) throws DAOException, NamingException {
 		return cf.createOrUpdateCliente(user);
 	}
+	public String createCliente(User user) throws DAOException, NamingException {
+		cf.createOrUpdateCliente(user);
+		return "login?i=2&faces-redirect=true";
+	}
 
 	public User getById(long id) throws DAOException, NamingException {
 		return cf.getById(id);

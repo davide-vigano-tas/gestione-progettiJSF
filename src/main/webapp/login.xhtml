@@ -56,7 +56,7 @@
 				</p:password>
 				<p:message for="password" display="text" style="width: 100%"/>
 			
-			   <p:outputLabel for="userType" value="Select Countries" />
+			   <p:outputLabel for="userType" value="Seleziona ruolo" />
 			    <p:selectOneMenu id="userType" value="#{userSessionBean.userType}">
 			        <f:selectItems value="#{userSessionBean.roles}" var="userType" itemLabel="#{userType}" itemValue="#{userType}" />
 			    </p:selectOneMenu>

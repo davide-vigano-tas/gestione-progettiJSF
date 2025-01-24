@@ -1,5 +1,6 @@
 package eu.tasgroup.gestione.web.bean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -98,7 +99,7 @@ public class UserSessionBean implements Serializable {
 
 						return "admin/admin-home";
 					}
-					return "login?i=2&faces-redirect=true";
+					return "login?faces-redirect=true";
 				} else {
 					FacesContext fc = FacesContext.getCurrentInstance();
 					fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Incorrect Username and Password",
@@ -111,7 +112,7 @@ public class UserSessionBean implements Serializable {
 			e.printStackTrace();
 		}
 
-		return "login?i=2&faces-redirect=true";
+		return "login?faces-redirect=true";
 	}
 
 	public boolean isLogged() {
@@ -141,18 +142,19 @@ public class UserSessionBean implements Serializable {
 		}
 	}
 
-	public void isNotLoggedRedirect() {
+	public void isNotLoggedRedirect() throws IOException {
 		if (username == null) {
+			System.out.println("here");
 			FacesContext context = FacesContext.getCurrentInstance();
-			NavigationHandler navigationHandler = context.getApplication().getNavigationHandler();
-			navigationHandler.handleNavigation(context, null, "login?i=2&faces-redirect=true");
+			context.getExternalContext().redirect("../login.xhtml?faces-redirect=true");
 		}
 	}
 
-	public String logout() {
+	public void logout() throws IOException {
 		username = null;
 		setPassword(null);
-		return "login?i=2&faces-redirect=true";
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().redirect("login.xhtml?faces-redirect=true");
 	}
 
 	public String getPassword() {

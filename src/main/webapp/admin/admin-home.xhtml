@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<c:if test="#{userSessionBean.username == null}">
+	
+	 <f:metadata>
+    <f:viewAction action="#{userSessionBean.isNotLoggedRedirect()}" />
+</f:metadata>
+	</c:if>
+<c:if test="#{userSessionBean.username != null}">
+<c:if test="#{userSessionBean.hasRole('ADMIN')}">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Admin Home</title>
+	<h:outputStylesheet name="css/style.css" />
+	<!-- PrimeFaces CSS per un miglior design -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</h:head>
+
+<h:body>
+
+	<ui:include src="/menu.xhtml" />
+
+
+
+	<!-- Container principale -->
+	<div class="container"
+		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+
+    <h:form>
+        <p:panel header="Benvenuto Admin #{adminFacadeBean.logged.username}" styleClass="mt-5 shadow-sm">
+            <p:panelGrid columns="2" columnClasses="col-md-6, col-md-6" styleClass="mb-3">
+                <h:outputText value="Nome: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminFacadeBean.logged.nome}" />
+                
+                <h:outputText value="Cognome: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminFacadeBean.logged.cognome}" />
+
+                <h:outputText value="Username: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminFacadeBean.logged.username}" />
+
+                <h:outputText value="Email: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminFacadeBean.logged.email}" />
+
+                <h:outputText value="Tentativi Errati: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminFacadeBean.logged.tentativiFalliti}" />
+
+                <h:outputText value="Account Bloccato: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminFacadeBean.logged.locked ? 'Sì' : 'No'}" />
+
+                <h:outputText value="Data Creazione: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminFacadeBean.logged.dataCreazione}" />
+            </p:panelGrid>
+
+            <p:separator />
+
+            <p:panelGrid columns="4" styleClass="my-4 justify-content-evenly" columnClasses="text-center text-center text-center text-center">
+                <h:commandLink action="/admin/progetti.xhtml" styleClass="btn">
+                    <i class="fa fa-code fa-2x"></i><br />
+                    <h:outputText value="Progetti" styleClass="font-weight-bold" />
+                </h:commandLink>
+
+                <h:commandLink action="/admin/pagamenti.xhtml" styleClass="btn">
+                    <i class="fa fa-euro-sign fa-2x"></i><br />
+                    <h:outputText value="Pagamenti" styleClass="font-weight-bold" />
+                </h:commandLink>
+
+                <h:commandLink action="/admin/users.xhtml" styleClass="btn">
+                    <i class="fa fa-users fa-2x"></i><br />
+                    <h:outputText value="Utenti" styleClass="font-weight-bold" />
+                </h:commandLink>
+
+                <h:commandLink action="/admin/skills.xhtml" styleClass="btn">
+                    <i class="fa fa-code-branch fa-2x"></i><br />
+                    <h:outputText value="Skills" styleClass="font-weight-bold" />
+                </h:commandLink>
+            </p:panelGrid>
+        </p:panel>
+    </h:form>
+
+
+	</div>
+
+	<ui:include src="/footer.xhtml" />
+
+</h:body>
+</c:if>
+</c:if>
+</html>
