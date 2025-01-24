@@ -19,7 +19,7 @@
 
 	<ui:include src="/menu.xhtml" />
 
-
+	<f:viewAction action="#{clienteFacadeBean.init}" />
 
 	<!-- Container principale -->
 	<div class="container"
@@ -46,43 +46,89 @@
 				<h:outputText value="#{clienteFacadeBean.user.dataCreazione}" />
 			</p:panelGrid>
 		</p:panel>
+
+		<!-- Progetti Associati -->
+		<p:panel styleClass="card shadow-sm mt-5">
+			<f:facet name="header">
+				<h4>Progetti Associati</h4>
+			</f:facet>
+			<div style="text-align: right; margin-bottom: 10px;">
+				<p:commandButton value="Nuovo Pagamento" styleClass="ui-button"
+					icon="pi pi-plus-circle" onclick="PF('paymentDialog').show();" />
+			</div>
+
+			<p:dataTable id="projectsTableContainer" var="project"
+				value="#{clienteFacadeBean.projects}" styleClass="table table-hover">
+				<p:column headerText="ID">
+					<h:outputText value="#{project.id}" />
+				</p:column>
+				<p:column headerText="Nome">
+					<h:outputText value="#{project.nomeProgetto}" />
+				</p:column>
+				<p:column headerText="Stato">
+					<h:outputText value="#{project.stato}" />
+				</p:column>
+				<p:column headerText="Progressi">
+					<p:progressBar value="#{project.percentualeCompletamento}"
+						style="height: 15px; margin-top: 6px;" />
+				</p:column>
+				<p:column headerText="Fine Prevista">
+					<h:outputText value="#{project.dataFine}" />
+				</p:column>
+				<p:column headerText="Da versare">
+					<h:outputText value="#{project.costoProgetto}" />
+				</p:column>
+				<p:column headerText="Pagamenti">
+					<p:commandButton
+						styleClass="rounded-button ui-button-warning ui-button-flat"
+						icon="pi pi-history" value="History" />
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+		<!-- Modale Pagamento -->
+		<p:dialog id="paymentModal" header="Effettua un pagamento"
+			widgetVar="paymentDialog" modal="true" resizable="false" width="600">
+			<div>
+				<h:form id="PaymentForm">
+					<p:card style="margin-top: 5px; margin-bottom: 20px;">
+						<!-- Titoli in jsf -->
+						<f:facet name="title">
+            Payment Form
+        </f:facet>
+						<f:facet name="subtitle">
+            Inserire i dati per il pagamento
+        </f:facet>
+
+						<p:panelGrid columns="3" layout="grid"
+							columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-4">
+
+							<p:outputLabel for="selectProject" value="Progetto" />
+							<p:selectOneMenu id="selectProject"
+								value="#{clienteFacadeBean.project}">
+								<f:selectItems value="#{clienteFacadeBean.projects}"
+									var="project" itemValue="#{project}"
+									itemLabel="#{project.nomeProgetto}"/>
+							</p:selectOneMenu>
+							<p:message for="selectProject" display="text" style="width: 100%" />
+
+							<p:outputLabel for="cifra" value="Cifra" />
+							<p:inputText id="cifra" required="true"
+								value="#{clienteFacadeBean.payment.cifra}"
+								requiredMessage="Cifra richiesta" feedback="true">
+							</p:inputText>
+							
+
+						</p:panelGrid>
+						<f:facet name="footer">
+							<p:commandButton value="Conferma Pagamento"
+								action="#{clienteFacadeBean.confirmPayment}"/>
+						</f:facet>
+					</p:card>
+				</h:form>
+			</div>
+		</p:dialog>
 	</div>
-
-	<!-- Progetti Associati -->
-	<p:panel styleClass="card shadow-sm mt-5">
-		<f:facet name="header">
-			<h4>Progetti Associati</h4>
-		</f:facet>
-		<p:commandButton value="Mostra/Nascondi Tabella"
-			styleClass="btn btn-link" icon="pi pi-chevron-down"
-			update="projectsTableContainer" onstart="toggleProjectsTable()" />
-		
-		<p:dataTable id="projectsTableContainer" var="project"
-			value="#{clienteFacadeBean.projects}" styleClass="table table-hover">
-			<p:column headerText="ID">
-				<h:outputText value="#{project.id}" />
-			</p:column>
-			<p:column headerText="Nome">
-				<h:outputText value="#{project.nomeProgetto}" />
-			</p:column>
-			<p:column headerText="Stato">
-				<h:outputText value="#{project.stato}" />
-			</p:column>
-			<p:column headerText="Progressi">
-				<p:progressBar value="#{project.percentualeCompletamento}"
-					style="height: 15px; margin-top: 6px;" />
-			</p:column>
-			<p:column headerText="Fine Prevista">
-				<h:outputText value="#{project.dataFine}" />
-			</p:column>
-			<p:column headerText="Da versare">
-				<h:outputText
-					value="#{project.costoProgetto - userController.getTotalPaymentsByProjectId(project.id)}" />
-			</p:column>
-		</p:dataTable>
-	</p:panel>
-
 	<ui:include src="/footer.xhtml" />
-
 </h:body>
 </html>
