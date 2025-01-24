@@ -5,14 +5,67 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-<h:head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-    <title>JSF WildFly App</title>
-    <h:outputStylesheet name="css/style.css"/>
-<h:outputScript name="js/locale-it.js"/>
+
+  <h:head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Tas home</title>
+<h:outputStylesheet name="css/style.css"/>
 </h:head>
 <h:body>
-    <h1>Benvenuto in JSF con WildFly!</h1>
+<div class="container">
+    <!-- Add a heading for context -->
+    <h2>Tas Home</h2>
+    
+    <!-- Styled login button -->
+    <h:commandButton 
+        value="Login" 
+        action="login?faces-redirect=true" 
+        styleClass="btn btn-primary" 
+        title="Click to log in"
+    />
+</div>
+
+<!-- Example CSS for styling -->
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 20px;
+        background-color: #f8f9fa;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    .container h2 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        border: none;
+        border-radius: 5px;
+        width: 100px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+
+   
+        <ui:include src="/footer.xhtml" />
+    
 </h:body>
 </html>
