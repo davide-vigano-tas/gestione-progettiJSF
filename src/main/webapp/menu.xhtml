@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+
+	<p:menubar styleClass="custom-menubar">
+		<p:menuitem value="Home" outcome="/index.xhtml" icon="pi pi-home" />
+
+		<c:if test="#{userSessionBean.username == null}">
+			<p:divider layout="vertical"/>
+			
+			<!-- Menu per utenti non autenticati -->
+			<p:menuitem value="Sign up" icon="pi pi-user-plus" />
+			<p:menuitem value="Login" icon="pi pi-sign-in" />
+
+			<f:facet name="end">
+				<div class="ui-input-icon-left mr-2">
+					<i class="pi pi-fw pi-search" />
+					<p:inputText placeholder="Search" />
+				</div>
+				<p:button value="Logout" icon="pi pi-fw pi-sign-out"
+					styleClass="ui-button-info" />
+			</f:facet>
+		</c:if>
+
+		<c:if test="#{userSessionBean.username != null}">
+			<!-- Menu per utenti autenticati -->
+			<c:if test="#{userSessionBean.hasRole('CLIENTE')}">
+				<p:submenu label="Cliente" icon="pi pi-user"
+					styleClass="custom-submenu">
+					<p:menuitem value="Home" outcome="/cliente/cliente-home.xhtml" />
+					<p:menuitem value="I tuoi pagamenti"
+						outcome="/cliente/lista-pagamenti.xhtml" />
+				</p:submenu>
+			</c:if>
+
+			<c:if test="#{userSessionBean.hasRole('DIPENDENTE')}">
+				<p:submenu label="Dipendente" icon="pi pi-briefcase"
+					styleClass="custom-submenu">
+					<p:menuitem value="Tasks" outcome="/dipendente/dip-tasks.xhtml" />
+					<p:menuitem value="Timesheets"
+						outcome="/dipendente/DipendenteTimesheets.xhtml" />
+					<p:menuitem value="Le tue skill"
+						outcome="/dipendente/dip-skills.xhtml" />
+					<p:menuitem value="Apri un ticket"
+						outcome="/dipendente/ticket-form.xhtml" style="color: red;" />
+					<p:menuitem value="Ticket" outcome="/dipendente/dip-tickets.xhtml" />
+				</p:submenu>
+			</c:if>
+
+			<c:if test="#{userSessionBean.hasRole('PROJECT_MANAGER')}">
+				<p:submenu label="Project Manager" icon="pi pi-users"
+					styleClass="custom-submenu">
+					<p:menuitem value="Dipendenti"
+						outcome="/projectManager/dipendenti.xhtml" />
+					<p:menuitem value="Progetti"
+						outcome="/projectManager/pm-projects.xhtml" />
+					<p:menuitem value="Timesheets"
+						outcome="/projectManager/pm-timesheets.xhtml" />
+					<p:menuitem value="Apri un ticket"
+						outcome="/projectManager/ticket-form.xhtml" style="color: red;" />
+					<p:menuitem value="Ticket"
+						outcome="/projectManager/pm-tickets.xhtml" />
+				</p:submenu>
+			</c:if>
+
+			<c:if test="#{userSessionBean.hasRole('ADMIN')}">
+				<p:submenu label="Admin" icon="pi pi-lock"
+					styleClass="custom-submenu">
+					<p:menuitem value="Skills" outcome="/admin/skills.xhtml" />
+					<p:menuitem value="Utenti" outcome="/admin/users.xhtml" />
+					<p:menuitem value="Timesheets" outcome="/admin/timesheets.xhtml" />
+					<p:menuitem value="Progetti" outcome="/admin/progetti.xhtml" />
+					<p:menuitem value="Pagamenti" outcome="/admin/pagamenti.xhtml" />
+					<p:menuitem value="AuditLog" outcome="/admin/auditlogs.xhtml" />
+					<p:menuitem value="Ticket" outcome="/admin/tickets.xhtml" />
+				</p:submenu>
+			</c:if>
+
+			<!-- Logout -->
+			<p:menuitem value="#{userSessionBean.username}" disabled="true"
+				styleClass="menu-text" icon="pi pi-user" />
+			<p:menuitem value="Logout" outcome="/logout.xhtml"
+				icon="pi pi-power-off" />
+		</c:if>
+	</p:menubar>
+</ui:composition>
