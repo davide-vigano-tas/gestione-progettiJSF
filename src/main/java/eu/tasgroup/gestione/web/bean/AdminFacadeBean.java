@@ -43,6 +43,7 @@ public class AdminFacadeBean implements Serializable{
 	private List<Skill> skills;
 	private String skillToAdd;
 	private List<String> skillsList;
+	private List<AuditLog> logs;
 
 
 	public String getSkillToAdd() {
@@ -102,6 +103,7 @@ public class AdminFacadeBean implements Serializable{
 	        	skillsList.add(sk.name());
 	        }
 	        skills = Arrays.asList(getAllSkills());
+	        logs = Arrays.asList(getAllAuditLogs());
 	        String error = facesContext.getExternalContext().getRequestParameterMap().get("error");
 	        if ("username_taken".equals(error)) {
 	            errorMessage = "Username già in uso";
@@ -487,6 +489,16 @@ public class AdminFacadeBean implements Serializable{
 
 	public void setSkillsList(List<String> skillsList) {
 		this.skillsList = skillsList;
+	}
+
+
+	public List<AuditLog> getLogs() {
+		return logs;
+	}
+
+
+	public void setLogs(List<AuditLog> logs) {
+		this.logs = logs;
 	}
 }
 

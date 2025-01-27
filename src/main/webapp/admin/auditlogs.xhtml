@@ -8,7 +8,7 @@
 
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Admin Home</title>
+	<title>Audit Logs</title>
 	<h:outputStylesheet name="css/style.css" />
 	<!-- PrimeFaces CSS per un miglior design -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -23,6 +23,32 @@
 	<!-- Container principale -->
 	<div class="container"
 		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+    <h:panelGroup rendered="#{not empty adminFacadeBean.errorMessage}">
+            <p:outputPanel id="error" styleClass="alert alert-danger">
+                #{adminFacadeBean.errorMessage}
+            </p:outputPanel>
+        </h:panelGroup>
+
+        <!-- Users Table -->
+        <p:dataTable id="skills" value="#{adminFacadeBean.logs}" var="a" rows ="5"
+						paginator="true" paginatorPosition="bottom"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     rowsPerPageTemplate="3,5,{ShowAll|'All'}">
+                     
+            <p:column headerText="Id" >
+                <h:outputText value="#{a.id}" />
+            </p:column>
+            <p:column headerText="Utente" >
+                <h:outputText value="#{a.utente}" />
+            </p:column>
+                <p:column headerText="Operazione" >
+                <h:outputText value="#{a.operazione}" />
+            </p:column>
+      
+        </p:dataTable>
+		
+
 
   </div>
 
