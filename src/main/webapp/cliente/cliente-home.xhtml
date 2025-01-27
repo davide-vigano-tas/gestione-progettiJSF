@@ -21,6 +21,16 @@
 
 	<f:viewAction action="#{clienteFacadeBean.init}" />
 
+	<f:metadata>
+		<f:viewParam name="success" value="#{clienteFacadeBean.success}" />
+		<f:viewParam name="error" value="#{clienteFacadeBean.error}" />
+	</f:metadata>
+
+	<p:growl id="growl" showDetail="true" autoUpdate="true" />
+
+	<f:event listener="#{clienteFacadeBean.displayMessage}"
+		type="preRenderView" />
+
 	<!-- Container principale -->
 	<div class="container"
 		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
@@ -73,15 +83,19 @@
 						style="height: 15px; margin-top: 6px;" />
 				</p:column>
 				<p:column headerText="Fine Prevista">
-					<h:outputText value="#{project.dataFine}" />
+					<h:outputText value="#{project.dataFine}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
 				</p:column>
 				<p:column headerText="Da versare">
-					<h:outputText value="#{project.costoProgetto}" />
+					<h:outputText
+						value="#{clienteFacadeBean.calcolaDaVersare(project.id)}" />
 				</p:column>
 				<p:column headerText="Pagamenti">
 					<p:commandButton
 						styleClass="rounded-button ui-button-warning ui-button-flat"
-						icon="pi pi-history" value="History" />
+						icon="pi pi-history" value="History"
+						action="#{clienteFacadeBean.showPaymentHistory(project.id)}" />
 				</p:column>
 			</p:dataTable>
 		</p:panel>
@@ -89,45 +103,42 @@
 		<!-- Modale Pagamento -->
 		<p:dialog id="paymentModal" header="Effettua un pagamento"
 			widgetVar="paymentDialog" modal="true" resizable="false" width="600">
-			<div>
-				<h:form id="PaymentForm">
-					<p:card style="margin-top: 5px; margin-bottom: 20px;">
-						<!-- Titoli in jsf -->
-						<f:facet name="title">
-            Payment Form
-        </f:facet>
-						<f:facet name="subtitle">
-            Inserire i dati per il pagamento
-        </f:facet>
+			<h:form id="paymentForm">
+				<p:card style="margin-top: 5px; margin-bottom: 20px;">
+					<!-- Titoli in jsf -->
+					<f:facet name="title">Payment Form</f:facet>
+					<f:facet name="subtitle">Inserire i dati per il pagamento</f:facet>
 
-						<p:panelGrid columns="3" layout="grid"
-							columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-4">
+					<p:panelGrid columns="3" layout="grid"
+						columnClasses="ui-grid-col-2, ui-grid-col-6, ui-grid-col-4">
 
-							<p:outputLabel for="selectProject" value="Progetto" />
-							<p:selectOneMenu id="selectProject"
-								value="#{clienteFacadeBean.project}">
-								<f:selectItems value="#{clienteFacadeBean.projects}"
-									var="project" itemValue="#{project}"
-									itemLabel="#{project.nomeProgetto}"/>
-							</p:selectOneMenu>
-							<p:message for="selectProject" display="text" style="width: 100%" />
+						<p:outputLabel for="selectProject" value="Progetto" />
+						<p:selectOneMenu id="selectProject"
+							value="#{clienteFacadeBean.payment.idProgetto}">
+							<f:selectItems value="#{clienteFacadeBean.projects}"
+								var="project" itemValue="#{project.id}"
+								itemLabel="#{project.nomeProgetto}" />
+						</p:selectOneMenu>
+						<p:message for="selectProject" display="text" style="width: 100%" />
 
-							<p:outputLabel for="cifra" value="Cifra" />
-							<p:inputText id="cifra" required="true"
-								value="#{clienteFacadeBean.payment.cifra}"
-								requiredMessage="Cifra richiesta" feedback="true">
-							</p:inputText>
-							
+						<p:outputLabel for="cifra" value="Cifra" />
+						<p:inputNumber id="cifra" required="true"
+							value="#{clienteFacadeBean.payment.cifra}"
+							requiredMessage="Cifra richiesta" feedback="true" minValue="0" />
+						<p:message for="cifra" />
 
-						</p:panelGrid>
-						<f:facet name="footer">
-							<p:commandButton value="Conferma Pagamento"
-								action="#{clienteFacadeBean.confirmPayment}"/>
-						</f:facet>
-					</p:card>
-				</h:form>
-			</div>
+					</p:panelGrid>
+
+					<f:facet name="footer">
+						<p:commandButton value="Conferma Pagamento"
+							action="#{clienteFacadeBean.confirmPayment}"
+							update=":paymentForm" />
+					</f:facet>
+				</p:card>
+			</h:form>
 		</p:dialog>
+
+
 	</div>
 	<ui:include src="/footer.xhtml" />
 </h:body>

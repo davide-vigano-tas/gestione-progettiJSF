@@ -26,11 +26,11 @@
 		<!-- Progetti Associati -->
 		<p:panel styleClass="card shadow-sm mt-5">
 			<f:facet name="header">
-				<h4>Payment History</h4>
+				<h4>Lista di tutti i pagamenti</h4>
 			</f:facet>
 		
 			<p:dataTable id="paymentsTableContainer" var="payment"
-				value="#{clienteFacadeBean.payments}" styleClass="table table-hover"
+				value="#{clienteFacadeBean.paymentsUser}" styleClass="table table-hover"
 				emptyMessage="Non ci sono pagamenti associati a questo progetto.">
 				<p:column headerText="ID">
 					<h:outputText value="#{payment.id}" />
