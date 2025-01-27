@@ -1,13 +1,14 @@
 package eu.tasgroup.gestione.web.bean;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.NamingException;
@@ -27,9 +28,13 @@ import eu.tasgroup.gestione.businesscomponent.model.Ticket;
 import eu.tasgroup.gestione.businesscomponent.model.Timesheet;
 import eu.tasgroup.gestione.businesscomponent.model.User;
 @Named
-@RequestScoped
-public class AdminFacadeBean {
+@ViewScoped
+public class AdminFacadeBean implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -171999536902730384L;
 	private AdminFacade af;
 	private User logged;
 	private String optionValue;
@@ -91,6 +96,7 @@ public class AdminFacadeBean {
 	        if(skill != null) {
 	        	users = Arrays.asList(getDipendentiBySkill(getSkillById(Long.parseLong(skill))));
 	        }
+	      
 	        skillsList = new ArrayList<String>();
 	        for(Skills sk : Skills.values()) {
 	        	skillsList.add(sk.name());
@@ -161,7 +167,7 @@ public class AdminFacadeBean {
 	        .redirect("/"+UserSessionBean.getServletContextName()+"/admin/users.xhtml");
 	   
 	}
-
+	
 	public String getUserDetails(long id) throws DAOException, NamingException {
 		this.adminUsersManaging.setUserDetails(getUserById(id));
 		Role[] roles = getRolesById(id);
