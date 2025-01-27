@@ -3,8 +3,13 @@ package eu.tasgroup.gestione.businesscomponent.model;
 import java.io.Serializable;
 import java.util.Objects;
 
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
 import eu.tasgroup.gestione.businesscomponent.enumerated.Skills;
 
+@Named
+@ViewScoped
 public class Skill implements Serializable {
 
 	private static final long serialVersionUID = 4615730567266391294L;

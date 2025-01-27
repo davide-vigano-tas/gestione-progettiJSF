@@ -35,10 +35,29 @@ public class AdminFacadeBean {
 	private String optionValue;
 	private String errorMessage;
 	private List<User> users;
+	private List<Skill> skills;
+	private String skillToAdd;
+	private List<String> skillsList;
 
-	
+
+	public String getSkillToAdd() {
+		return skillToAdd;
+	}
 
 
+	public void setSkillToAdd(String skillToAdd) {
+		this.skillToAdd = skillToAdd;
+	}
+
+
+	public List<Skill> getSkills() {
+		return skills;
+	}
+
+
+	public void setSkills(List<Skill> skills) {
+		this.skills = skills;
+	}
 
 	@Inject
 	private UserSessionBean userSessionBean;
@@ -68,6 +87,15 @@ public class AdminFacadeBean {
 	            optionValue = option;
 	        }
 	        users = Arrays.asList(getAllUsers());
+	        String skill = facesContext.getExternalContext().getRequestParameterMap().get("skill");
+	        if(skill != null) {
+	        	users = Arrays.asList(getDipendentiBySkill(getSkillById(Long.parseLong(skill))));
+	        }
+	        skillsList = new ArrayList<String>();
+	        for(Skills sk : Skills.values()) {
+	        	skillsList.add(sk.name());
+	        }
+	        skills = Arrays.asList(getAllSkills());
 	        String error = facesContext.getExternalContext().getRequestParameterMap().get("error");
 	        if ("username_taken".equals(error)) {
 	            errorMessage = "Username già in uso";
@@ -175,6 +203,14 @@ public class AdminFacadeBean {
 		return af.getDipendentiBySkill(skill);
 	}
 	
+	
+	public String showDipendentiBySkill(Skill skill) throws DAOException, NamingException {
+		System.err.println("Chiamato show skill: "+skill);
+		  users =Arrays.asList(getDipendentiBySkill(skill));
+		  return "users?skill="+skill.getId()+"&faces-redirect=true";
+		
+	}
+	
 	/*-------------------------------Utenti in base al ruolo*/
 	public User[] getUsersByRole(Ruoli ruolo) throws DAOException, NamingException {
 		return af.getUsersByRole(ruolo);
@@ -189,6 +225,8 @@ public class AdminFacadeBean {
 	public void addSkill(User user, Skill skill) throws DAOException, NamingException {
 		af.addSkill(user, skill);
 	}
+	
+
 	/*-------------------------------Aggiunge un ruolo all'utente*/
 	public void addRole(User user, Role role) throws DAOException, NamingException {
 		af.addRole(user, role);
@@ -279,6 +317,12 @@ public class AdminFacadeBean {
 	/*--------------------------------------Creazione skill*/
 	public Skill createSkill(Skill skill) throws DAOException, NamingException {
 		return af.createSkill(skill);
+	}
+	public String addNewSkill() throws DAOException, NamingException {
+		Skill nuova = new Skill();
+		nuova.setTipo(Skills.valueOf(skillToAdd));
+		af.createSkill(nuova);
+		return "skills?faces-redirect=true";
 	}
 	/*-------------------------------------- skill in base all'id*/
 	public Skill getSkillById(long id) throws DAOException, NamingException {
@@ -427,6 +471,16 @@ public class AdminFacadeBean {
 	
 	public void deleteTicket(long id) throws DAOException, NamingException {
 		af.deleteTicket(id);
+	}
+
+
+	public List<String> getSkillsList() {
+		return skillsList;
+	}
+
+
+	public void setSkillsList(List<String> skillsList) {
+		this.skillsList = skillsList;
 	}
 }
 

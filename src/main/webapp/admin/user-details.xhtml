@@ -28,6 +28,12 @@
 	<ui:include src="/menu.xhtml" />
 
 
+  <!-- Error Message -->
+        <h:panelGroup rendered="#{not empty adminFacadeBean.errorMessage}">
+            <p:outputPanel id="error" styleClass="alert alert-danger">
+                #{adminFacadeBean.errorMessage}
+            </p:outputPanel>
+        </h:panelGroup>
 
 
      <h:form>
