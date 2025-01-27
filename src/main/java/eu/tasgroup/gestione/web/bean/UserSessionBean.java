@@ -145,7 +145,6 @@ public class UserSessionBean implements Serializable {
 
 	public void isNotLoggedRedirect() throws IOException {
 		if (username == null) {
-			System.out.println("here");
 			FacesContext context = FacesContext.getCurrentInstance();
 			context.getExternalContext().redirect("../login.xhtml?faces-redirect=true");
 		}

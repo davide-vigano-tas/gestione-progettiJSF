@@ -29,7 +29,7 @@
  <h:form id="q_form">
             <h:panelGrid columns="2">
                 <p:outputLabel value="Search Non-Assigned Employees:" />
-                <p:commandButton value="Search" icon="fas fa-search" action="#{adminFacadeBean.init}" update="usersTable" />
+                <p:commandButton value="Search" icon="fas fa-search" action="#{adminFacadeBean.setNotAssignedEmployees}" update="usersTable" />
             </h:panelGrid>
         </h:form>
 
@@ -59,7 +59,9 @@
                 <h:outputText value="#{adminFacadeBean.getRolesString(u.username)}" />
             </p:column>
             <p:column style="width: 20%">
-                <p:commandLink value="Details" icon="fas fa-user" action="dettagliUtente" update="usersTable" />
+                <p:commandLink action="#{adminFacadeBean.getUserDetails(u.id)}" update="usersTable" >
+                 <i class="fas fa-user"></i>
+                 </p:commandLink>
             </p:column>
         </p:dataTable>
 
@@ -121,7 +123,7 @@
 
       
            
-            <p:commandButton value="Salva" action="#{adminFacadeBean.createUser(user)}"  update=":formModal" icon="fa fa-save" styleClass="ui-button-success" />
+            <p:commandButton value="Salva" action="#{adminFacadeBean.createUser(user, userSessionBean.userType)}"  update=":formModal" icon="fa fa-save" styleClass="ui-button-success" />
             </p:panelGrid>
         </h:form>
     </p:dialog>

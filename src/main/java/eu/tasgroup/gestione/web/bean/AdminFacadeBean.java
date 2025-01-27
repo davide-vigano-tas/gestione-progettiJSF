@@ -1,13 +1,12 @@
 package eu.tasgroup.gestione.web.bean;
 
 import java.io.IOException;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,10 +35,29 @@ public class AdminFacadeBean {
 	private String optionValue;
 	private String errorMessage;
 	private List<User> users;
+
 	
+
+
+
 	@Inject
 	private UserSessionBean userSessionBean;
 	
+	@Inject
+	private AdminUsersManaging adminUsersManaging;
+	
+	
+	
+	public AdminUsersManaging getAdminUsersManaging() {
+		return adminUsersManaging;
+	}
+
+
+	public void setAdminUsersManaging(AdminUsersManaging adminUsersManaging) {
+		this.adminUsersManaging = adminUsersManaging;
+	}
+
+
 	@PostConstruct
 	public void init() {
 		try {
@@ -50,7 +68,6 @@ public class AdminFacadeBean {
 	            optionValue = option;
 	        }
 	        users = Arrays.asList(getAllUsers());
-	        System.err.println(users.get(0));
 	        String error = facesContext.getExternalContext().getRequestParameterMap().get("error");
 	        if ("username_taken".equals(error)) {
 	            errorMessage = "Username già in uso";
@@ -61,11 +78,18 @@ public class AdminFacadeBean {
 			e.printStackTrace();
 		}
 	}
+	
+	
+
+
+
 	public AdminFacadeBean() throws DAOException, NamingException {
 		af = AdminFacade.getInstance();
 	}
 	
-	
+	public void setNotAssignedEmployees() throws DAOException, NamingException {
+		users = Arrays.asList(getDipendentiNonAssegnati());
+	}
 	
 	public String getOptionValue() {
 		return optionValue;
@@ -97,28 +121,41 @@ public class AdminFacadeBean {
 	public void setLogged(User logged) {
 		this.logged = logged;
 	}
-	public void createUser(User user) throws IOException, DAOException, NamingException {
+	public void createUser(User user, String role) throws IOException, DAOException, NamingException {
 	 
-	       af.createUser(user);
+			user = af.createUser(user);
+			Role ruolo = new Role();
+			ruolo.setIdUser(user.getId());
+			ruolo.setRole(Ruoli.valueOf(role));
+			af.addRole(user, ruolo);
 	        // Redirect to another page
-	        FacesContext.getCurrentInstance().getExternalContext().redirect("/"+UserSessionBean.getServletContextName()+"/admin/users.xhtml");
+	        FacesContext.getCurrentInstance().getExternalContext()
+	        .redirect("/"+UserSessionBean.getServletContextName()+"/admin/users.xhtml");
 	   
 	}
 
+	public String getUserDetails(long id) throws DAOException, NamingException {
+		this.adminUsersManaging.setUserDetails(getUserById(id));
+		Role[] roles = getRolesById(id);
+		List<String> selectedUserRoles = new ArrayList<String>();
+		for(Role r : roles) {
+			selectedUserRoles.add(r.getRole().name());
+		}
+		this.adminUsersManaging.setSelectedUserRoles(selectedUserRoles);
+		return "user-details";
+	}
+
 	
+	public void toggleLockUser() throws DAOException, NamingException {
+		User userDetails = adminUsersManaging.getUserDetails();
+		userDetails.setLocked(!userDetails.isLocked());
+	}
 	/*------------------------------------Tutti gli utenti*/
 	public User[] getAllUsers() throws DAOException, NamingException {
 		return af.getAllUsers();
 	}
 	
-	/*------------------------------------Update imformazioni admin*/
-	public User updateAdmin(User user) throws DAOException, NamingException {
-		User retrieved = af.getByUsername(user.getUsername());
-		Role[] ruoli = af.getRolesById(retrieved.getId());
-		if(ruoli.length > 0 && Arrays.asList(ruoli).stream().anyMatch((r) -> r.getRole().equals(Ruoli.ADMIN))) {
-			return af.createUser(user);
-		} else throw new DAOException(new SQLException("Wrong role"));
-	}
+
 	/*------------------------------------Utente in base all'id*/
 	public User getUserById(long id) throws DAOException, NamingException {
 		return af.getUserById(id);
@@ -157,6 +194,22 @@ public class AdminFacadeBean {
 		af.addRole(user, role);
 	}
 	
+	public void addRoleToCurrent() throws DAOException, NamingException {
+
+	
+				
+				User userDetails = adminUsersManaging.getUserDetails();
+				Role ruolo = new Role();
+				ruolo.setIdUser(userDetails.getId());
+				ruolo.setRole(Ruoli.valueOf(adminUsersManaging.getRoleToAdd()));
+				af.addRole(userDetails, ruolo);
+				Role[] roles = getRolesById(userDetails.getId());
+				List<String> selectedUserRoles = new ArrayList<String>();
+				for(Role r : roles) {
+					selectedUserRoles.add(r.getRole().name());
+				}
+				adminUsersManaging.setSelectedUserRoles(selectedUserRoles);
+	}
 	
 	/*-------------------------------Modifica un ruolo dell'utente*/
 	public void updateRole(Role from, Ruoli to) throws DAOException, NamingException {
@@ -172,8 +225,9 @@ public class AdminFacadeBean {
 		String roles = "";
 		for(Role r: getRolesByUsername(username)) {
 			roles += r.getRole().name()+" ";
-		
+
 		}
+	
 		return roles;
 	}
 	/*--------------------------------Ruoli di un utente*/
@@ -184,6 +238,16 @@ public class AdminFacadeBean {
 	/*--------------------------------Elimina il ruolo associato all'utente*/
 	public void deleteRole(Ruoli role, User user) throws DAOException, NamingException {
 		af.deleteRole(role, user);
+	}
+	public void deleteRoleFromCurrent() throws DAOException, NamingException {
+		User userDetails = adminUsersManaging.getUserDetails();
+		af.deleteRole(Ruoli.valueOf(adminUsersManaging.getRoleToDelete()), userDetails);
+		Role[] roles = getRolesById(userDetails.getId());
+		List<String> selectedUserRoles = new ArrayList<String>();
+		for(Role r : roles) {
+			selectedUserRoles.add(r.getRole().name());
+		}
+		adminUsersManaging.setSelectedUserRoles(selectedUserRoles);
 	}
 	
 	/*----------------------------------Elimina utente*/

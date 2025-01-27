@@ -90,5 +90,10 @@
 
 </h:body>
 </c:if>
+<c:if test="#{userSessionBean.hasRole('ADMIN') == false}">
+	 <f:metadata>
+    <f:viewAction action="login?faces-redirect=true" />
+</f:metadata>
+</c:if>
 </c:if>
 </html>
