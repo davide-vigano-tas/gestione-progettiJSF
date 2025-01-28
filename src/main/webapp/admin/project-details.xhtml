@@ -90,8 +90,17 @@
                  </p:commandLink>
                   </h:form>
 	    </p:panelGrid>
+	    <h:form style="margin-bottom: 20px;">
+	    <p:outputLabel for="PDFproject" value="Download Project Report PDF" style="margin-right: 10px;"></p:outputLabel>
+	    <p:commandButton id ="PDFproject" value="Download PDF" 
+	    action="#{projectPDFBean.downloadPdfProject(adminProjectsManaging.project.id)}" ajax="false"></p:commandButton>
+	    </h:form>
 
-    
+    	    <h:form>
+	    <p:outputLabel for="CSVTask" value="Download CSV task table" style="margin-right: 10px;"></p:outputLabel>
+	    <p:commandButton id ="CSVTask" value="Download CSV" 
+	    action="#{cSVTasksBean.downloadCSVTasks(adminProjectsManaging.project.id)}" ajax="false"></p:commandButton>
+	    </h:form>
 
 	<p:separator></p:separator>
 	       

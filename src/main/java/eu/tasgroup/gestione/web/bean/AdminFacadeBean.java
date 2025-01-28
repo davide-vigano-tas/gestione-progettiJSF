@@ -13,6 +13,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.NamingException;
 
+import org.primefaces.component.barchart.BarChart;
+
 import eu.tasgroup.gestione.architetture.dao.DAOException;
 import eu.tasgroup.gestione.businesscomponent.enumerated.Ruoli;
 import eu.tasgroup.gestione.businesscomponent.enumerated.Skills;
@@ -45,9 +47,9 @@ public class AdminFacadeBean implements Serializable{
 	private List<String> skillsList;
 	private List<AuditLog> logs;
 	private List<Project> projects;
+	private List<Timesheet> timesheets;
 	
-	
-
+	private String barModel;
 
 	public String getSkillToAdd() {
 		return skillToAdd;
@@ -113,6 +115,9 @@ public class AdminFacadeBean implements Serializable{
 	        skills = Arrays.asList(getAllSkills());
 	        logs = Arrays.asList(getAllAuditLogs());
 	        projects = Arrays.asList(getAllProjects());
+	        
+	        timesheets = Arrays.asList(getAllTimesheet());
+	        
 	        String error = facesContext.getExternalContext().getRequestParameterMap().get("error");
 	        if ("username_taken".equals(error)) {
 	            errorMessage = "Username già in uso";
@@ -123,7 +128,6 @@ public class AdminFacadeBean implements Serializable{
 			e.printStackTrace();
 		}
 	}
-	
 	
 
 
@@ -557,6 +561,33 @@ public class AdminFacadeBean implements Serializable{
 	public void setAdminTasksManaging(AdminTasksManaging adminTasksManaging) {
 		this.adminTasksManaging = adminTasksManaging;
 	}
+
+
+	public String getBarModel() {
+		return barModel;
+	}
+
+
+	public void setBarModel(String barModel) {
+		this.barModel = barModel;
+	}
+
+
+	public List<Timesheet> getTimesheets() {
+		return timesheets;
+	}
+
+
+	public void setTimesheets(List<Timesheet> timesheets) {
+		this.timesheets = timesheets;
+	}
+
+
+
+
+
+
+
 
 
 
