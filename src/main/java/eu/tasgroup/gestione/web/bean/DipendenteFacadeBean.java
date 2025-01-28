@@ -1,220 +1,206 @@
 package eu.tasgroup.gestione.web.bean;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.NamingException;
 
 import eu.tasgroup.gestione.architetture.dao.DAOException;
-import eu.tasgroup.gestione.businesscomponent.AuditLogBC;
-import eu.tasgroup.gestione.businesscomponent.ProjectBC;
-import eu.tasgroup.gestione.businesscomponent.ProjectTaskBC;
-import eu.tasgroup.gestione.businesscomponent.SkillBC;
-import eu.tasgroup.gestione.businesscomponent.TicketBC;
-import eu.tasgroup.gestione.businesscomponent.TimesheetBC;
-import eu.tasgroup.gestione.businesscomponent.UserBC;
-import eu.tasgroup.gestione.businesscomponent.enumerated.Fase;
-import eu.tasgroup.gestione.businesscomponent.enumerated.Ruoli;
-import eu.tasgroup.gestione.businesscomponent.enumerated.StatoTask;
-import eu.tasgroup.gestione.businesscomponent.model.AuditLog;
+import eu.tasgroup.gestione.businesscomponent.facade.DipendenteFacade;
 import eu.tasgroup.gestione.businesscomponent.model.Project;
 import eu.tasgroup.gestione.businesscomponent.model.ProjectTask;
-import eu.tasgroup.gestione.businesscomponent.model.Role;
 import eu.tasgroup.gestione.businesscomponent.model.Skill;
 import eu.tasgroup.gestione.businesscomponent.model.Ticket;
 import eu.tasgroup.gestione.businesscomponent.model.Timesheet;
 import eu.tasgroup.gestione.businesscomponent.model.User;
+import eu.tasgroup.gestione.businesscomponent.security.EscapeHTML;
 @Named
 @RequestScoped
 public class DipendenteFacadeBean {
 	
-	private static DipendenteFacadeBean df;
-	private UserBC userBC;
-	private ProjectBC projectBC;
-	private TimesheetBC tBC;
-	private ProjectTaskBC ptBC;
-	private SkillBC sBC;
-	private AuditLogBC auditLogBC ;
-	private TicketBC ticketBC;
+	private DipendenteFacade df;
+	private User user;
+	private Timesheet timesheet;
+	private Project project;
+	private List<ProjectTask> tasks;
+	private List<Project> dip_projects;
+	private List<Timesheet> timesheets;
+	private List<Skill> dip_skills;
+	private List<Ticket> dip_tickets;
 	
 	
-	private DipendenteFacadeBean() throws DAOException, NamingException {
-		
-		userBC = new UserBC();
-		projectBC = new ProjectBC();
-		tBC = new TimesheetBC();
-		ptBC = new ProjectTaskBC();
-		sBC = new SkillBC();
-		ticketBC = new TicketBC();
-		auditLogBC = new AuditLogBC();
+	@Inject
+	private UserSessionBean userSessionBean;
+	
+	public DipendenteFacadeBean() throws DAOException, NamingException {
+		df = DipendenteFacade.getInstance();
 	}
 	
-	public static DipendenteFacadeBean getInstance() throws DAOException, NamingException {
-		if(df == null) 
-			df = new DipendenteFacadeBean();
-		return df;
-	}
-	
-	// ---------- crea o modifica dipendente
-	public User createOrUpdateDipendente(User user) throws DAOException, NamingException {
-		User created = userBC.createOrUpdate(user);
-		if(user.getId() == 0) {
-			Role role = new Role();
-			role.setRole(Ruoli.DIPENDENTE);
-			userBC.addRole(created, role);
+	@PostConstruct
+	public void init() {
+		try {
+			this.user = getByUsername(userSessionBean.getUsername());
+			this.tasks = getProjectTaskByDipendente(user.getId());
+			this.timesheets = getTimesheetsByDipendente(user.getId());
+			this.dip_skills = getSkillsByDipendente(user.getId());
+			this.dip_projects = getProjectByDipendente(user.getId());
+			//this.dip_tickets = getTicketsByDipendente(user.getId());
+		} catch (DAOException | NamingException e) {
+			e.printStackTrace();
 		}
-		return created;
 	}
 	
-	public void deleteDipendente(long id)throws DAOException, NamingException {
-		User u = userBC.getById(id);
-		
-		userBC = new UserBC();
-		userBC.delete(u);
-	}
-	
-	/*-------------------------------dip in base all'id*/
-	public User getById(long id) throws DAOException, NamingException {
-		
-		return userBC.getById(id);
-	}
-	
-	/*-------------------------------dip in base allo username*/
 	public User getByUsername(String username) throws DAOException, NamingException {
-		return userBC.getByUsername(username);
+		return df.getByUsername(username);
 	}
 	
-	public User getByEmail(String email) throws DAOException, NamingException {
-		return userBC.getByEmail(email);
+	public List<ProjectTask> getProjectTaskByDipendente(long id) throws DAOException, NamingException{
+		return df.getProjectTaskByDipendente(id);
 	}
 	
-	/*------------------------------------Percentuale completamento progetto in base all'id*/
-	public int getPercentualeCompletamentoProjectID(long id) throws DAOException, NamingException {
-		return projectBC.getPercentualeCompletamento(id);
-	}
-	/*------------------------------------Percentuale completamento progetto in base all'id*/
-	public void updatePercentualeCompletamentoProjectID(long idProgetto, int n) throws DAOException, NamingException {
-		 Project project = projectBC.getById(idProgetto);
-		 project.setPercentualeCompletamento(n);
-		 projectBC.createOrUpdate(project);
+	public List<Project> getProjectByDipendente(long id) throws DAOException, NamingException{
+		return new ArrayList<>(df.getProjectByDipendente(id));
 	}
 	
-	/*--------------------------------------Progetto in base all'ID*/
-	public Project getProjectById(long id) throws DAOException, NamingException {
-		return projectBC.getById(id);
+	public List<Timesheet> getTimesheetsByDipendente(long id) throws DAOException, NamingException{
+		return df.getTimesheetByDipendente(id);
 	}
 	
-	// -------------crate or update timesheet
-	public void createOrUpdateTimesheet(Timesheet timesheet) throws DAOException, NamingException {
-		tBC.createOrUpdate(timesheet);
+	public List<Skill> getSkillsByDipendente(long id) throws DAOException, NamingException{
+		List<Skill> skills = Arrays.asList(df.getSkillsByUser(id));
+		return skills;
 	}
 	
-	//-----------------------timesheet by id
-	public Timesheet timesheetByID(long id) throws DAOException, NamingException {
-		return tBC.getById(id);
+	public List<Ticket> getTicketsByDipendente(long id) throws DAOException, NamingException{
+		List<Ticket> tickets = Arrays.asList(df.getByDipendente(id));
+		return tickets;
+	}
+	//------------------------------------------------------------
+	
+	public String createTimesheet(Timesheet timesheet,long idDipendente) throws DAOException, NamingException {
+		
+		//SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+		
+		Long idTask = timesheet.getIdTask();
+		Long idProgetto = df.getProjectTaskById(idTask).getIdProgetto();
+		Double ore = timesheet.getOreLavorate();
+		Date data = timesheet.getData();
+		
+		Timesheet timesheets = new Timesheet();
+		timesheets.setIdDipendente(idDipendente);
+		timesheets.setIdProgetto(idProgetto);
+		timesheets.setIdTask(idTask);
+		timesheets.setOreLavorate(ore);
+		timesheets.setData(data);
+		
+		System.out.println(timesheets);
+		
+		df.createOrUpdateTimesheet(timesheets);
+		
+		return "dipendente/dip-timesheets.xhtml";
+		
 	}
 	
-	//-----------------------timesheet by dip
-	public List<Timesheet> getTimesheetByDipendente(long id) throws DAOException, NamingException {
-		return tBC.getListByDipendente(id);
+	//-----------------------------------------------------------------------------------------------
+	public String getProjectNameByIdProject(long id) throws DAOException, NamingException{
+		return df.getProjectById(id).getNomeProgetto();
 	}
 	
-	//-----------------------delete timesheet 
-	public void deleteTimesheet(long id) throws DAOException, NamingException {
-		tBC.delete(id);
+	public String getEmailByIdDipendente(long id) throws DAOException, NamingException{
+		return df.getById(id).getEmail();
 	}
 	
-	//------------------Update stato ProjectTask
-	public ProjectTask updateProjectTaskStato(StatoTask stato, long id) throws DAOException, NamingException {
-		return ptBC.updateStato(stato, id);
-	}
-	
-	//------------------ ProjectTask by id
-	public ProjectTask getProjectTaskById(long id) throws DAOException, NamingException {
-		return ptBC.getByID(id);
-	}
-	
-	//---------/////////ProjectTask by dipendente
-	public List<ProjectTask> getProjectTaskByDipendente(long id) throws DAOException, NamingException {
-		return ptBC.getByDipendente(id);
-	}
-	
-	//------------------------- ProjectTask by proj
-	public List<ProjectTask> getProjectTaskByProject(long id) throws DAOException, NamingException {
-		return ptBC.getByProject(id);
-	}
-	
-	//------------------------get all skill
-	public Skill[] getAllSkill() throws DAOException, NamingException {
-		return sBC.getByAll();
-	}
-	
-	//----------add skill
-	public void addSkill(long id, Skill skill) throws DAOException, NamingException {
-		userBC.addSkill(userBC.getById(id), skill);
-	}
-  	/*--------------------------------Ruoli di un utente*/
-	public Role[] getRolesById(long id) throws DAOException, NamingException {
-		return userBC.getRolesById(id);
-	}
-	
-	public List<ProjectTask> getTaskByFaseAndProject(Fase fase, long idProject) throws DAOException, NamingException{
-		List<ProjectTask> tasks = new ArrayList<ProjectTask>();
-		for(ProjectTask task : ptBC.getByProject(idProject)) {
-			if(task.getFase() == fase)
-				tasks.add(task);
-		}
-		return tasks;
-	}
-	
-	public Set<Project> getProjectByDipendente(long id) throws DAOException, NamingException {
-		Set<Project> projects = new HashSet<Project>();
-		List<ProjectTask> tasks = ptBC.getByDipendente(id);
-		for(ProjectTask task : tasks) {
-			projects.add(projectBC.getById(task.getIdProgetto()));
-		}
-		return projects;
-	}
-	
-	/*-------------------------------Utenti in base al ruolo*/
-	public User[] getAllDipendenti() throws DAOException, NamingException {
-		return userBC.getByRole(Ruoli.DIPENDENTE);
-	}
-	
-	//---------------------skill del dipendnete
-	public Skill[] getSkillsByUser(long id) throws DAOException, NamingException {
-		return sBC.getByUser(id);
-	}
-	//---------------------skill del dipendnete
-	public Skill getSkillsById(long id) throws DAOException, NamingException {
-		return sBC.getByID(id);
-	}
-	public void createOrupdateAuditLog(AuditLog log) throws DAOException, NamingException {
-		auditLogBC.createOrUpdate(log);
-	}
-	
-	/*----------------------------------------Ticket*/
-	
-	public void createorUpdateTicket(Ticket ticket) throws DAOException, NamingException {
-		ticketBC.createOrUpdate(ticket);
-	}
-	
-	public Ticket[] getByDipendente(long id) throws DAOException, NamingException {
-		return ticketBC.getByDipendente(id);
-	}
-	
-	public Ticket getTicketById(long id) throws DAOException, NamingException {
-		return ticketBC.getById(id);
+	public String getTaskNameByIdTask(long id) throws DAOException, NamingException{
+		return df.getProjectTaskById(id).getNomeTask();
 	}
 
-	public Project createOrUpdateProject(Project project) throws DAOException, NamingException {
-		projectBC = new ProjectBC();
-		return projectBC.createOrUpdate(project);
+	public DipendenteFacade getDf() {
+		return df;
 	}
+
+	public void setDf(DipendenteFacade df) {
+		this.df = df;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
+	}
+
+	public List<ProjectTask> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<ProjectTask> tasks) {
+		this.tasks = tasks;
+	}
+
+
+
+	public List<Timesheet> getTimesheets() {
+		return timesheets;
+	}
+
+	public void setTimesheets(List<Timesheet> timesheets) {
+		this.timesheets = timesheets;
+	}
+
+	
+
+	public List<Skill> getDip_skills() {
+		return dip_skills;
+	}
+
+	public void setDip_skills(List<Skill> dip_skills) {
+		this.dip_skills = dip_skills;
+	}
+
+	public List<Ticket> getDip_tickets() {
+		return dip_tickets;
+	}
+
+	public void setDip_tickets(List<Ticket> dip_tickets) {
+		this.dip_tickets = dip_tickets;
+	}
+
+	public List<Project> getDip_projects() {
+		return dip_projects;
+	}
+
+	public void setDip_projects(List<Project> dip_projects) {
+		this.dip_projects = dip_projects;
+	}
+
+	public Timesheet getTimesheet() {
+		return timesheet;
+	}
+
+	public void setTimesheet(Timesheet timesheet) {
+		this.timesheet = timesheet;
+	}
+
+
+	
+	
+	
 
 	
 }
