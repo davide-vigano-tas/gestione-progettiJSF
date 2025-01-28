@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Tas Home</title>
+    <h:outputStylesheet library="css" name="style.css"/>
+    <style>
+        .content-section {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .content-section h2 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .content-section p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .content-section img {
+            max-width: 130px;
+            height: auto;
+            margin-right: 25px;
+            border-radius: 10px;
+        }
+        .login {
+            border-radius: 30px;
+        }
+        .login:hover {
+            border-radius: 20px;
+            filter: brightness(110%);
+        }
+        .link-style {
+            color: #03122F !important;
+            border-radius: 25px;
+            min-width: 7.5em;
+            border: 0.5rem solid rgba(251,123,6,1) !important;
+            transition: 0.7s;
+        }
+        .link-style:hover {
+            color: #03122F !important;
+            border-radius: 22px;
+            border: 0.5rem solid #a70fff !important;
+            
+        }
+        
+        .riga{
+        	display: flex;
+        	justify-content: space-around;
+        }
+    }
+    </style>
+</h:head>
+<h:body>
+  	<ui:include src="/menu.xhtml" />
+    <div class="container">
+        <p:panel header="Benvenuto #{userSessionBean.username}" styleClass="content-section">
+            <p:panelGrid columns="2" styleClass="content-section">
+                <p:outputLabel value="Nome: #{dipendenteFacadeBean.getByUsername(userSessionBean.username).getNome()}" />
+                <p:outputLabel value="Cognome: #{dipendenteFacadeBean.getByUsername(userSessionBean.username).getCognome()}" />
+                <p:outputLabel value="Username: #{userSessionBean.username}" />
+                <p:outputLabel value="Email: #{dipendenteFacadeBean.getByUsername(userSessionBean.username).getEmail()}" />
+                <p:outputLabel value="Tentativi Errati: #{dipendenteFacadeBean.getByUsername(userSessionBean.username).getTentativiFalliti()}" />
+                <p:outputLabel value="Account Bloccato: #{dipendenteFacadeBean.getByUsername(userSessionBean.username).isLocked()}" />
+                <p:outputLabel value="Data Creazione: #{dipendenteFacadeBean.getByUsername(userSessionBean.username).getDataCreazione()}" />
+            </p:panelGrid>
+
+            <hr/>
+
+            <p:panelGrid styleClass="content-section" columns="3">
+            	<p:row styleClass="riga">
+            		
+            		<p:column styleClass="link-style">
+            		<h:link outcome="/dipendente/dip-projects.xhtml">
+		                    <i class="pi pi-code" style="font-size: 2rem;"></i>
+		                    <br></br>
+		                    <strong>Progetti</strong>
+            		</h:link>
+            		</p:column>
+            		<p:column styleClass="link-style">
+            		<h:link outcome="/dipendente/dip-tasks.xhtml">
+		                    <i class="pi pi-code" style="font-size: 2rem;"></i>
+		                    <br></br>
+		                    <strong>Tasks</strong>
+            		</h:link>
+            		</p:column>
+            		<p:column styleClass="link-style">
+            		<h:link outcome="/dipendente/dip-timesheets.xhtml">
+		                    <i class="pi pi-calendar" style="font-size: 2rem;"></i>
+		                    <br></br>
+		                    <strong>Timesheet</strong>
+            		</h:link>
+            		</p:column>
+            	</p:row>
+
+
+            </p:panelGrid>
+        </p:panel>
+    </div>
+        <ui:include src="/footer.xhtml"/>
+</h:body>
+</html>

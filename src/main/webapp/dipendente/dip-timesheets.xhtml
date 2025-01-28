@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+
+<h:head>
+    <title>Tas Home</title>
+    <h:outputStylesheet library="css" name="style.css"/>
+    <style>
+        .content-section {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .content-section h2 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .content-section p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .content-section img {
+            max-width: 130px;
+            height: auto;
+            margin-right: 25px;
+            border-radius: 10px;
+        }
+        .login {
+            border-radius: 30px;
+        }
+        .login:hover {
+            border-radius: 20px;
+            filter: brightness(110%);
+        }
+        .link-style {
+            color: #03122F !important;
+            border-radius: 25px;
+            min-width: 7.5em;
+            border: 0.5rem solid rgba(251,123,6,1) !important;
+            transition: 0.7s;
+        }
+        .link-style:hover {
+            color: #03122F !important;
+            border-radius: 22px;
+            border: 0.5rem solid #a70fff !important;
+        }
+        .riga {
+            display: flex;
+            justify-content: space-around;
+        }
+    </style>
+</h:head>
+<h:body>
+    <ui:include src="../menu.xhtml"/>
+    <div class="container">
+        <p:panel header="Timesheets" styleClass="content-section">
+            <p:panelGrid columns="2" styleClass="content-section">
+                <p:outputLabel value="Nome: #{dipendenteFacadeBean.user.nome}" />
+                <p:outputLabel value="Cognome: #{dipendenteFacadeBean.user.cognome}" />
+                <p:outputLabel value="Username: #{dipendenteFacadeBean.user.username}" />
+                <p:outputLabel value="Email: #{dipendenteFacadeBean.user.email}" />
+                <p:outputLabel value="Tentativi Errati: #{dipendenteFacadeBean.user.tentativiFalliti}" />
+                <p:outputLabel value="Account Bloccato: #{dipendenteFacadeBean.user.locked}" />
+                <p:outputLabel value="Data Creazione: #{dipendenteFacadeBean.user.dataCreazione}" />
+            </p:panelGrid>
+
+            <hr/>
+
+            <h:link outcome="/dipendente/dip-timesheet-form.xhtml">
+                 <strong>Nuova Timesheet</strong>
+       		</h:link>
+       		
+	        <h:form>
+    <div class="card">
+         <p:dataTable var="timesheetTable" value="#{dipendenteFacadeBean.timesheets}">
+                <p:column headerText="Timesheet ID">
+                    <h:outputText value="#{timesheetTable.id}" />
+                </p:column>
+                <p:column headerText="Progetto">
+                 <!--    <h:outputText value="#{task.idProgetto}" />-->
+                     <h:outputText value="#{dipendenteFacadeBean.getProjectNameByIdProject(timesheetTable.idProgetto)}" /> 
+                </p:column>
+                <p:column headerText="Dipendente">
+                    <h:outputText value="#{dipendenteFacadeBean.getEmailByIdDipendente(timesheetTable.idDipendente)}" />
+                </p:column>
+                <p:column headerText="Task">
+                    <h:outputText value="#{dipendenteFacadeBean.getTaskNameByIdTask(timesheetTable.idTask)}" />
+                </p:column>
+                <p:column headerText="Ore">
+                    <h:outputText value="#{timesheetTable.oreLavorate}" />
+                </p:column>
+                <p:column headerText="Data">
+                    <h:outputText value="#{timesheetTable.data}" />
+                </p:column>
+                <p:column headerText="Stato">
+                    <h:outputText value="#{timesheetTable.approvato == null ? 'in attesa' : timesheetTable.approvato}" />
+                </p:column>
+            </p:dataTable>
+        </div>
+</h:form>
+        </p:panel>
+    </div>
+    <ui:include src="/footer.xhtml"/>
+</h:body>
+</html>

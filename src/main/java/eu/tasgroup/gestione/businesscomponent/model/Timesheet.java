@@ -72,7 +72,13 @@ public class Timesheet implements Serializable {
 		System.out.println(approvato);
 		return approvato;
 	}
+	
+	public Boolean getApprovato() {
+		return approvato;
+	}
 
+	
+	
 	public void setApprovato(Boolean approvato) {
 		this.approvato = approvato;
 	}
