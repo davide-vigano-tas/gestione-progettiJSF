@@ -1,54 +1,41 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://xmlns.jcp.org/jsf/html"
-	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 
 <h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Tas Home</title>
-	<h:outputStylesheet name="css/style.css" />
-	<!-- PrimeFaces CSS per un miglior design -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Tas Home</title>
+    <h:outputStylesheet name="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </h:head>
 
 <h:body>
+    <!-- Menu -->
+    <ui:include src="/menu.xhtml" />
 
-	<ui:include src="/menu.xhtml" />
+    <!-- Container principale -->
+    <div class="container" style="max-width: 800px; margin: 2rem auto; text-align: center;">
+        <!-- Titolo -->
+        <h2 style="font-size: 2rem; margin-bottom: 2rem;">Benvenuto!</h2>
+        <p style="margin-bottom: 1rem;">Scegli un'opzione per continuare:</p>
 
+        <!-- Pulsanti -->
+        <div style="display: flex; justify-content: center; gap: 2rem;">
+            <!-- Pulsante Login -->
+            <p:button value="Login" icon="pi pi-sign-in" outcome="/login.xhtml"
+                      styleClass="ui-button-primary" style="padding: 1rem; font-size: 1.2rem;" />
 
+            <!-- Pulsante Registrati -->
+            <p:button value="Registrati" icon="pi pi-user-plus" outcome="/registrazione.xhtml"
+                      styleClass="ui-button-secondary" style="padding: 1rem; font-size: 1.2rem;" />
+        </div>
+    </div>
 
-	<!-- Container principale -->
-	<div class="container"
-		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
-
-		<!-- Heading -->
-		<h2 class="page-title"
-			style="text-align: center; font-size: 2rem; margin-bottom: 2rem;">
-			Seleziona il tuo ruolo</h2>
-		<div style="text-align: center; width: 100%">
-			<p>
-				<p:button value="Admin" styleClass="ui-button-outlined"
-					style="width: 100%;" />
-			</p>
-			<p>
-				<p:button value="Project - Manager" styleClass="ui-button-outlined"
-					style="width: 100%;" />
-			</p>
-			<p>
-				<p:button value="Dipendente" styleClass="ui-button-outlined"
-					style="width: 100%;" />
-			</p>
-			<p>
-				<p:button value="Cliente" styleClass="ui-button-outlined"
-					style="width: 100%;" />
-			</p>
-		</div>
-	</div>
-
-	<ui:include src="/footer.xhtml" />
-
+    <!-- Footer -->
+    <ui:include src="/footer.xhtml" />
 </h:body>
 </html>
