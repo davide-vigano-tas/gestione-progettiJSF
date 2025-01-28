@@ -4,9 +4,13 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
 import eu.tasgroup.gestione.businesscomponent.enumerated.Fase;
 import eu.tasgroup.gestione.businesscomponent.enumerated.StatoTask;
-
+@Named
+@ViewScoped
 public class ProjectTask implements Serializable {
 	private static final long serialVersionUID = 4442416040038390835L;
 

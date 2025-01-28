@@ -44,6 +44,9 @@ public class AdminFacadeBean implements Serializable{
 	private String skillToAdd;
 	private List<String> skillsList;
 	private List<AuditLog> logs;
+	private List<Project> projects;
+	
+	
 
 
 	public String getSkillToAdd() {
@@ -71,6 +74,11 @@ public class AdminFacadeBean implements Serializable{
 	@Inject
 	private AdminUsersManaging adminUsersManaging;
 	
+	@Inject
+	private AdminProjectsManaging adminProjectsManaging;
+	
+	@Inject
+	private AdminTasksManaging adminTasksManaging;
 	
 	
 	public AdminUsersManaging getAdminUsersManaging() {
@@ -104,6 +112,7 @@ public class AdminFacadeBean implements Serializable{
 	        }
 	        skills = Arrays.asList(getAllSkills());
 	        logs = Arrays.asList(getAllAuditLogs());
+	        projects = Arrays.asList(getAllProjects());
 	        String error = facesContext.getExternalContext().getRequestParameterMap().get("error");
 	        if ("username_taken".equals(error)) {
 	            errorMessage = "Username già in uso";
@@ -178,6 +187,7 @@ public class AdminFacadeBean implements Serializable{
 			selectedUserRoles.add(r.getRole().name());
 		}
 		this.adminUsersManaging.setSelectedUserRoles(selectedUserRoles);
+		System.err.println("id :"+id);
 		return "user-details";
 	}
 
@@ -361,6 +371,18 @@ public class AdminFacadeBean implements Serializable{
 	public ProjectTask getTaskById(long id) throws DAOException, NamingException {
 		return af.getTaskById(id);
 	}
+	public String getTaskDetails(long id) throws DAOException, NamingException {
+		this.adminTasksManaging.setTask(getTaskById(id));
+		Timesheet[] timesheets = af.getAllTimesheet();
+		List<Timesheet> listTimesheets = new ArrayList<Timesheet>();
+		for(Timesheet t : timesheets) {
+			if(t.getIdTask() == id) {
+				listTimesheets.add(t);
+			}
+		}
+		this.adminTasksManaging.setTimesheets(listTimesheets);
+		return "task-details";
+	}
 	
 	/*-----------------------------------Elenco task in base al progetto*/
 	public List<ProjectTask> getTasksByProject(Project project) throws DAOException, NamingException {
@@ -394,6 +416,11 @@ public class AdminFacadeBean implements Serializable{
 	/*--------------------------------Progetto in base all'id*/
 	public Project getProjectById(long id) throws DAOException, NamingException {
 		return af.getProjectById(id);
+	}
+	
+	public String getProjectDetails(long id) throws DAOException, NamingException {
+		this.adminProjectsManaging.setProject(getProjectById(id));
+		return "project-details";
 	}
 	/*--------------------------------Elenco progetti in base allo stato*/
 	public List<Project> getProjectByStatus(StatoProgetto stato) throws DAOException, NamingException {
@@ -500,5 +527,39 @@ public class AdminFacadeBean implements Serializable{
 	public void setLogs(List<AuditLog> logs) {
 		this.logs = logs;
 	}
+
+
+	public List<Project> getProjects() {
+		return projects;
+	}
+
+
+	public void setProjects(List<Project> projects) {
+		this.projects = projects;
+	}
+
+
+	public AdminProjectsManaging getAdminProjectsManaging() {
+		return adminProjectsManaging;
+	}
+
+
+	public void setAdminProjectsManaging(AdminProjectsManaging adminProjectsManaging) {
+		this.adminProjectsManaging = adminProjectsManaging;
+	}
+
+
+	public AdminTasksManaging getAdminTasksManaging() {
+		return adminTasksManaging;
+	}
+
+
+	public void setAdminTasksManaging(AdminTasksManaging adminTasksManaging) {
+		this.adminTasksManaging = adminTasksManaging;
+	}
+
+
+
+	
 }
 

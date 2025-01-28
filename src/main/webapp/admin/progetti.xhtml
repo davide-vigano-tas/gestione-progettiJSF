@@ -23,7 +23,61 @@
 	<!-- Container principale -->
 	<div class="container"
 		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+   <h:panelGroup rendered="#{not empty adminFacadeBean.errorMessage}">
+            <p:outputPanel id="error" styleClass="alert alert-danger">
+                #{adminFacadeBean.errorMessage}
+            </p:outputPanel>
+        </h:panelGroup>
 
+        <!-- Users Table -->
+        <p:dataTable id="logs" value="#{adminFacadeBean.projects}" var="p" rows ="5"
+						paginator="true" paginatorPosition="bottom"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     rowsPerPageTemplate="3,5,{ShowAll|'All'}">
+                     
+            <p:column headerText="Id" >
+            <h:form>
+                 <p:commandLink value="#{p.id}" action="#{adminFacadeBean.getProjectDetails(p.id)}"  >
+                 <i class="pi pi-chart-bar"></i>
+               
+                 </p:commandLink>
+                  </h:form>
+            </p:column>
+            <p:column headerText="Nome" >
+                <h:outputText value="#{p.nomeProgetto}" />
+            </p:column>
+                <p:column headerText="Descrizione" >
+                <h:outputText value="#{p.descrizione}" />
+            </p:column>
+                  <p:column headerText="Inizio" >
+                <h:outputText value="#{p.dataInizio}">
+                	<f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+            </p:column>
+                <p:column headerText="Completamento" style="width: 150px;">
+                <h:outputText value="#{p.percentualeCompletamento}%" />
+            </p:column>
+             <p:column headerText="Stato" >
+                <h:outputText value="#{p.stato.name()}" />
+            </p:column>
+        <p:column headerText="Fine" >
+                <h:outputText value="#{p.dataFine}">
+                	<f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+            </p:column>
+               <p:column headerText="Budget" >
+                <h:outputText value="#{p.budget}">
+                	<f:convertNumber type="currency" currencySymbol="€" />
+                </h:outputText>
+            </p:column>
+                    <p:column headerText="Costo" >
+                <h:outputText value="#{p.costoProgetto}">
+                	<f:convertNumber type="currency" currencySymbol="€" />
+                </h:outputText>
+            </p:column>
+        </p:dataTable>
+		
   </div>
 
 	<ui:include src="/footer.xhtml" />

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<c:if test="#{userSessionBean.username == null}">
+	
+	 <f:metadata>
+    <f:viewAction action="#{userSessionBean.isNotLoggedRedirect()}" />
+</f:metadata>
+	</c:if>
+<c:if test="#{userSessionBean.username != null}">
+<c:if test="#{userSessionBean.hasRole('ADMIN')}">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Dettagli Task</title>
+	<h:outputStylesheet name="css/style.css" />
+	<!-- PrimeFaces CSS per un miglior design -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+</h:head>
+
+<h:body>
+
+	<ui:include src="/menu.xhtml" />
+
+
+  <!-- Error Message -->
+        <h:panelGroup rendered="#{not empty adminFacadeBean.errorMessage}">
+            <p:outputPanel id="error" styleClass="alert alert-danger">
+                #{adminFacadeBean.errorMessage}
+            </p:outputPanel>
+        </h:panelGroup>
+
+
+  
+        <p:panel id="userInfo" header="Dettagli sulla Task #{adminTasksManaging.task.id}" styleClass="mt-5 shadow-sm">
+       
+            <p:panelGrid columns="2" columnClasses="col-md-6, col-md-6" styleClass="mb-3">
+                <h:outputText value="Nome: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminTasksManaging.task.nomeTask}" />
+                
+                <h:outputText value="Descrizione: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminTasksManaging.task.descrizione}" />
+
+         
+                       <h:outputText value="Dipendente: " styleClass="font-weight-bold" />
+            	<h:form>
+                 <p:commandLink value="#{adminTasksManaging.task.idDipendente}" 
+                 action="#{adminFacadeBean.getUserDetails(adminTasksManaging.task.idDipendente)}"  >
+                 <i class="fas fa-user-tie"></i>
+               
+                 </p:commandLink>
+                  </h:form>
+         
+
+                <h:outputText value="Stato: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminTasksManaging.task.stato.name()}" />
+
+                <h:outputText value="Scadenza: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminTasksManaging.task.scadenza}" >
+                	<f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+                
+                
+                <h:outputText value="Fase: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminTasksManaging.task.fase.name()}" />
+                             
+
+	    </p:panelGrid>
+
+    
+
+	<p:separator></p:separator>
+	       
+	         	
+			
+	<p:dataTable id="timesheets" value="#{adminTasksManaging.timesheets}" var="t" rows ="5"
+						paginator="true" paginatorPosition="bottom"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     rowsPerPageTemplate="3,5,{ShowAll|'All'}">
+                     
+		            <p:column headerText="Id" >
+		            
+		             <h:outputText value="#{t.id}" />
+		            </p:column>
+		         
+		            <p:column headerText="Ore lavorate" >
+		                <h:outputText value="#{t.oreLavorate}" />
+		            </p:column>
+		 
+		      
+		  
+			        <p:column headerText="Data" >
+			                <h:outputText value="#{t.data}">
+			                	<f:convertDateTime pattern="dd/MM/yyyy" />
+			                </h:outputText>
+			            </p:column>
+			      <p:column headerText="Approvazione" >
+		               <c:if test="#{t.approvato == null}">
+		               		<h:outputText value="in attesa" />
+		               </c:if>
+		               <c:if test="#{t.approvato}">
+		               <h:outputText value="approvato" />
+		               </c:if>
+			               <c:if test="#{t.approvato == false}">
+		               <h:outputText value="rifiutato" />
+		               </c:if>
+		            </p:column>
+			    
+        </p:dataTable>
+	
+				
+ </p:panel>
+
+	<ui:include src="/footer.xhtml" />
+
+</h:body>
+</c:if>
+</c:if>
+</html>

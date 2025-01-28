@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+
+@Named
+@ViewScoped
 public class Timesheet implements Serializable {
 	private static final long serialVersionUID = 7654336974232692517L;
 

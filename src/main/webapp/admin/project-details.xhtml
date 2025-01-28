@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+		xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<c:if test="#{userSessionBean.username == null}">
+	
+	 <f:metadata>
+    <f:viewAction action="#{userSessionBean.isNotLoggedRedirect()}" />
+</f:metadata>
+	</c:if>
+<c:if test="#{userSessionBean.username != null}">
+<c:if test="#{userSessionBean.hasRole('ADMIN')}">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Dettagli Progetto</title>
+	<h:outputStylesheet name="css/style.css" />
+	<!-- PrimeFaces CSS per un miglior design -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+</h:head>
+
+<h:body>
+
+	<ui:include src="/menu.xhtml" />
+
+
+  <!-- Error Message -->
+        <h:panelGroup rendered="#{not empty adminFacadeBean.errorMessage}">
+            <p:outputPanel id="error" styleClass="alert alert-danger">
+                #{adminFacadeBean.errorMessage}
+            </p:outputPanel>
+        </h:panelGroup>
+
+
+  
+        <p:panel id="userInfo" header="Dettagli sul progetto #{adminProjectsManaging.project.id}" styleClass="mt-5 shadow-sm">
+       
+            <p:panelGrid columns="2" columnClasses="col-md-6, col-md-6" styleClass="mb-3">
+                <h:outputText value="Nome: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminProjectsManaging.project.nomeProgetto}" />
+                
+                <h:outputText value="Descrizione: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminProjectsManaging.project.descrizione}" />
+
+                <h:outputText value="Data Inizio: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminProjectsManaging.project.dataInizio}" >
+                	<f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+
+                <h:outputText value="Stato: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminProjectsManaging.project.stato.name()}" />
+
+                <h:outputText value="Completamento: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminProjectsManaging.project.percentualeCompletamento}%" />
+
+                <h:outputText value="Data Fine: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminProjectsManaging.project.dataFine}" >
+                	<f:convertDateTime pattern="dd/MM/yyyy" />
+                </h:outputText>
+                             
+                 <h:outputText value="Budget: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminProjectsManaging.project.budget}" >
+                	<f:convertNumber type="currency" currencySymbol="€" />
+                </h:outputText>
+        
+                <h:outputText value="Costo: " styleClass="font-weight-bold" />
+                <h:outputText value="#{adminProjectsManaging.project.costoProgetto}" >
+                	<f:convertNumber type="currency" currencySymbol="€" />
+                </h:outputText>
+                
+           <h:outputText value="Responsabile: " styleClass="font-weight-bold" />
+            <h:form>
+                 <p:commandLink value="#{adminProjectsManaging.project.idResponsabile}" 
+                 action="#{adminFacadeBean.getUserDetails(adminProjectsManaging.project.idResponsabile)}"  >
+                 <i class="fas fa-user-tie"></i>
+               
+                 </p:commandLink>
+                  </h:form>
+                            
+           <h:outputText value="Cliente: " styleClass="font-weight-bold" />
+            <h:form>
+                 <p:commandLink value="#{adminProjectsManaging.project.idCliente}"
+                  action="#{adminFacadeBean.getUserDetails(adminProjectsManaging.project.idCliente)}"  >
+                 <i class="fas fa-user"></i>
+               
+                 </p:commandLink>
+                  </h:form>
+	    </p:panelGrid>
+
+    
+
+	<p:separator></p:separator>
+	       
+	         	
+			
+	<p:dataTable id="tasks" value="#{adminFacadeBean.getTasksByProject(adminProjectsManaging.project)}" var="t" rows ="5"
+						paginator="true" paginatorPosition="bottom"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     rowsPerPageTemplate="3,5,{ShowAll|'All'}">
+                     
+		            <p:column headerText="Id" >
+		            <h:form>
+		                 <p:commandLink value="#{t.id}" action="#{adminFacadeBean.getTaskDetails(t.id)}"  >
+		                 <i class="pi pi-chart-bar"></i>
+		               
+		                 </p:commandLink>
+		                  </h:form>
+		            </p:column>
+		            <p:column headerText="Nome" >
+		                <h:outputText value="#{t.nomeTask}" />
+		            </p:column>
+		               <p:column headerText="Descrizione" >
+		                <h:outputText value="#{t.descrizione}" />
+		            </p:column>
+		                  <p:column headerText="Dipendente" >
+		                <h:outputText value="#{t.idDipendente}"/>
+		            </p:column>
+		                <p:column headerText="Stato">
+		                <h:outputText value="#{t.stato.name()}" />
+		            </p:column>
+		  
+			        <p:column headerText="Scadenza" >
+			                <h:outputText value="#{t.scadenza}">
+			                	<f:convertDateTime pattern="dd/MM/yyyy" />
+			                </h:outputText>
+			            </p:column>
+			          
+			                <p:column headerText="Fase">
+			                <h:outputText value="#{t.fase.name()}" />
+			            </p:column>
+        </p:dataTable>
+	
+				
+ </p:panel>
+
+	<ui:include src="/footer.xhtml" />
+
+</h:body>
+</c:if>
+</c:if>
+</html>
