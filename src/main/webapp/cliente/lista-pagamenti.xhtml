@@ -28,7 +28,7 @@
 			<f:facet name="header">
 				<h4>Payment History</h4>
 			</f:facet>
-		
+
 			<p:dataTable id="paymentsTableContainer" var="payment"
 				value="#{clienteFacadeBean.payments}" styleClass="table table-hover"
 				emptyMessage="Non ci sono pagamenti associati a questo progetto.">
@@ -40,6 +40,13 @@
 				</p:column>
 				<p:column headerText="Cifra">
 					<h:outputText value="#{payment.cifra}" />
+				</p:column>
+				<p:column headerText="Scarica Fattura">
+					<h:form>
+						<p:commandButton icon="pi pi-download" value="Scarica PDF"
+							action="#{invoiceBean.downloadInvoicePDF(payment.id)}"
+							ajax="false"/>
+					</h:form>
 				</p:column>
 			</p:dataTable>
 		</p:panel>

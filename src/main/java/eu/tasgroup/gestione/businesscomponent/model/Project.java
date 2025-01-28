@@ -4,12 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-import javax.faces.view.ViewScoped;
-import javax.inject.Named;
-
 import eu.tasgroup.gestione.businesscomponent.enumerated.StatoProgetto;
-@Named
-@ViewScoped
+
 public class Project implements Serializable {
 
 	private static final long serialVersionUID = -1080423990767730075L;

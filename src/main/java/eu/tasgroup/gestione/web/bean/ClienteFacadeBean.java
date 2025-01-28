@@ -172,6 +172,10 @@ public class ClienteFacadeBean implements Serializable {
 	}
 
 	public double calcolaDaVersare(long projectID) {
+		
+		System.out.println(projectID);
+		if(projectID == 0)
+			return 0.0;
 		try {
 			return cf.getProjectById(projectID).getCostoProgetto() - cf.getTotalPaymentsByProjectId(projectID);
 		} catch (Exception e) {
