@@ -4,8 +4,17 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
-
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	
+	<c:if test="#{userSessionBean.username == null}">
+	
+	 <f:metadata>
+    <f:viewAction action="#{userSessionBean.isNotLoggedRedirect()}" />
+</f:metadata>
+	</c:if>
+<c:if test="#{userSessionBean.username != null}">
+<c:if test="#{userSessionBean.hasRole('ADMIN')}">
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Admin Home</title>
@@ -23,10 +32,49 @@
 	<!-- Container principale -->
 	<div class="container"
 		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+ <h:panelGroup rendered="#{not empty adminFacadeBean.errorMessage}">
+            <p:outputPanel id="error" styleClass="alert alert-danger">
+                #{adminFacadeBean.errorMessage}
+            </p:outputPanel>
+        </h:panelGroup>
 
+        <!-- Users Table -->
+        <p:dataTable id="logs" value="#{adminFacadeBean.payments}" var="p" rows ="5"
+						paginator="true" paginatorPosition="bottom"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                     rowsPerPageTemplate="3,5,{ShowAll|'All'}">
+                     
+            <p:column headerText="Id" >
+            <h:outputText value="#{p.id}" />
+            </p:column>
+            <p:column headerText="Progetto" >
+                           <h:form>
+                 <p:commandLink value="#{p.idProgetto}" action="#{adminFacadeBean.getProjectDetails(p.idProgetto)}"  >
+                 <i class="pi pi-chart-bar"></i>
+               
+                 </p:commandLink>
+                  </h:form>
+            </p:column>
+
+             <p:column headerText="Cifra" >
+                <h:outputText value="#{p.cifra}" >
+                	<f:convertNumber type="currency" currencySymbol="€" />
+                </h:outputText>
+            </p:column>
+    
+        </p:dataTable>
+		
   </div>
 
 	<ui:include src="/footer.xhtml" />
 
 </h:body>
+</c:if>
+<c:if test="#{userSessionBean.hasRole('ADMIN') == false}">
+	 <f:metadata>
+    <f:viewAction action="login?faces-redirect=true" />
+</f:metadata>
+</c:if>
+</c:if>
 </html>
