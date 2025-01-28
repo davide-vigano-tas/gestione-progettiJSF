@@ -9,6 +9,7 @@ import java.util.List;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.NavigationHandler;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.naming.NamingException;
@@ -31,9 +32,9 @@ public class UserSessionBean implements Serializable {
 	private String username;
 	private String password;
 	private String userType;
-	private String otp; // Campo per l'OTP inserito dall'utente
-	private String generatedOtp; // Campo per memorizzare l'OTP generato
-	private String userEmail; // Campo per memorizzare l'email dell'utente
+	private String otp;
+	private String generatedOtp;
+	private String userEmail; 
 
 	private List<String> roles = new ArrayList<String>();
 
@@ -243,10 +244,13 @@ public class UserSessionBean implements Serializable {
 	}
 
 	public void logout() throws IOException {
-		username = null;
-		setPassword(null);
-		FacesContext context = FacesContext.getCurrentInstance();
-		context.getExternalContext().redirect("/" + getServletContextName() + "/login.xhtml?faces-redirect=true");
+		  // Invalida la sessione corrente
+	    FacesContext context = FacesContext.getCurrentInstance();
+	    ExternalContext externalContext = context.getExternalContext();
+	    externalContext.invalidateSession();
+
+	    // Reindirizza alla pagina di login
+	    externalContext.redirect("/" + getServletContextName() + "/login.xhtml?faces-redirect=true");
 	}
 
 	public String getPassword() {
