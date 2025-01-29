@@ -109,7 +109,11 @@ public class UserSessionBean implements Serializable {
 			User user = userBean.getByUsername(username);
 			if (user != null) {
 				if (Algoritmo.verificaPassword(password, user.getPassword())) {
+					System.out.println("Password corretta");
 					List<Role> roles = Arrays.asList(userBean.getRolesById(user.getId()));
+					
+					System.out.println(roles);
+					
 					if (roles.stream().anyMatch(r -> r.getRole().equals(Ruoli.CLIENTE))
 							&& userType.equals(Ruoli.CLIENTE.name())) {
 
@@ -144,7 +148,7 @@ public class UserSessionBean implements Serializable {
 					}
 					if (roles.stream().anyMatch(r -> r.getRole().equals(Ruoli.PROJECT_MANAGER))
 							&& userType.equals(Ruoli.PROJECT_MANAGER.name())) {
-
+						System.out.println("MAtch con Project manager");
 						return "projectManager/projectManager-home";
 					}
 					if (roles.stream().anyMatch(r -> r.getRole().equals(Ruoli.ADMIN))

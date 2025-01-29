@@ -14,7 +14,8 @@
 			<p:divider layout="vertical" />
 
 			<!-- Menu per utenti non autenticati -->
-			<p:menuitem value="Sign up" icon="pi pi-user-plus" outcome="/registrazione.xhtml"/>
+			<p:menuitem value="Sign up" icon="pi pi-user-plus"
+				outcome="/registrazione.xhtml" />
 			<p:menuitem value="Login" icon="pi pi-sign-in" outcome="/login.xhtml" />
 
 			<f:facet name="end">
@@ -39,8 +40,8 @@
 			</c:if>
 
 			<c:if test="#{userSessionBean.hasRole('DIPENDENTE')}">
-				<p:submenu label="#{userSessionBean.username}" icon="pi pi-briefcase"
-					styleClass="custom-submenu">
+				<p:submenu label="#{userSessionBean.username}"
+					icon="pi pi-briefcase" styleClass="custom-submenu">
 					<p:menuitem value="Tasks" outcome="/dipendente/dip-tasks.xhtml" />
 					<p:menuitem value="Timesheets"
 						outcome="/dipendente/dip-timesheets.xhtml" />
@@ -55,10 +56,12 @@
 			<c:if test="#{userSessionBean.hasRole('PROJECT_MANAGER')}">
 				<p:submenu label="#{userSessionBean.username}" icon="pi pi-users"
 					styleClass="custom-submenu">
-					<p:menuitem value="Dipendenti"
-						outcome="/projectManager/dipendenti.xhtml" />
+					<p:menuitem value="Pagina Iniziale"
+						outcome="/projectManager/projectManager-home.xhtml" />
 					<p:menuitem value="Progetti"
 						outcome="/projectManager/pm-projects.xhtml" />
+					<p:menuitem value="Dipendenti"
+						outcome="/projectManager/dipendenti.xhtml" />
 					<p:menuitem value="Timesheets"
 						outcome="/projectManager/pm-timesheets.xhtml" />
 					<p:menuitem value="Apri un ticket"

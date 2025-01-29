@@ -4,142 +4,157 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-<h:head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Tas Home</title>
-	<h:outputStylesheet name="css/style.css" />
-	<!-- PrimeFaces CSS per un miglior design -->
-	<h:outputStylesheet
-		name="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-</h:head>
-
-<h:body>
-
-	<ui:include src="/menu.xhtml" />
-
-	<f:viewAction action="#{clienteFacadeBean.init}" />
-
+<c:if test="#{userSessionBean.username == null}">
 	<f:metadata>
-		<f:viewParam name="success" value="#{clienteFacadeBean.success}" />
-		<f:viewParam name="error" value="#{clienteFacadeBean.error}" />
+		<f:viewAction action="#{userSessionBean.isNotLoggedRedirect()}" />
 	</f:metadata>
+</c:if>
 
-	<p:growl id="growl" showDetail="true" autoUpdate="true" />
+<c:if test="#{userSessionBean.username != null}">
+	<c:if test="#{userSessionBean.hasRole('CLIENTE')}">
 
-	<f:event listener="#{clienteFacadeBean.displayMessage}"
-		type="preRenderView" />
+		<h:head>
+			<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+			<title>Tas Home</title>
+			<h:outputStylesheet name="css/style.css" />
+			<!-- PrimeFaces CSS per un miglior design -->
+			<h:outputStylesheet
+				name="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+		</h:head>
 
-	<!-- Container principale -->
-	<div class="container"
-		style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
+		<h:body>
 
-		<!-- Card Benvenuto -->
-		<p:panel header="Benvenuto, #{clienteFacadeBean.user.username}"
-			styleClass="card shadow-sm mt-5">
-			<p:panelGrid columns="2" columnClasses="col-md-6,col-md-6"
-				styleClass="row mb-3">
-				<h:outputText value="Nome:" />
-				<h:outputText value="#{clienteFacadeBean.user.nome}" />
-				<h:outputText value="Cognome:" />
-				<h:outputText value="#{clienteFacadeBean.user.cognome}" />
-				<h:outputText value="Username:" />
-				<h:outputText value="#{clienteFacadeBean.user.username}" />
-				<h:outputText value="Email:" />
-				<h:outputText value="#{clienteFacadeBean.user.email}" />
-				<h:outputText value="Tentativi Errati:" />
-				<h:outputText value="#{clienteFacadeBean.user.tentativiFalliti}" />
-				<h:outputText value="Account Bloccato:" />
-				<h:outputText value="#{clienteFacadeBean.user.locked}" />
-				<h:outputText value="Data Creazione:" />
-				<h:outputText value="#{clienteFacadeBean.user.dataCreazione}" />
-			</p:panelGrid>
-		</p:panel>
+			<ui:include src="/menu.xhtml" />
 
-		<!-- Progetti Associati -->
-		<p:panel styleClass="card shadow-sm mt-5">
-			<f:facet name="header">
-				<h4>Progetti Associati</h4>
-			</f:facet>
-			<div style="text-align: right; margin-bottom: 10px;">
-				<p:commandButton value="Nuovo Pagamento" styleClass="ui-button"
-					icon="pi pi-plus-circle" onclick="PF('paymentDialog').show();" />
-			</div>
+			<f:viewAction action="#{clienteFacadeBean.init}" />
 
-			<p:dataTable id="projectsTableContainer" var="project"
-				value="#{clienteFacadeBean.projects}" styleClass="table table-hover">
-				<p:column headerText="ID">
-					<h:outputText value="#{project.id}" />
-				</p:column>
-				<p:column headerText="Nome">
-					<h:outputText value="#{project.nomeProgetto}" />
-				</p:column>
-				<p:column headerText="Stato">
-					<h:outputText value="#{project.stato}" />
-				</p:column>
-				<p:column headerText="Progressi">
-					<p:progressBar value="#{project.percentualeCompletamento}"
-						style="height: 15px; margin-top: 6px;" />
-				</p:column>
-				<p:column headerText="Fine Prevista">
-					<h:outputText value="#{project.dataFine}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
-				</p:column>
-				<p:column headerText="Da versare">
-					<h:outputText
-						value="#{clienteFacadeBean.calcolaDaVersare(project.id)}" />
-				</p:column>
-				<p:column headerText="Pagamenti">
-					<p:commandButton
-						styleClass="rounded-button ui-button-warning ui-button-flat"
-						icon="pi pi-history" value="History"
-						action="#{clienteFacadeBean.showPaymentHistory(project.id)}" />
-				</p:column>
-			</p:dataTable>
-		</p:panel>
+			<f:metadata>
+				<f:viewParam name="success" value="#{clienteFacadeBean.success}" />
+				<f:viewParam name="error" value="#{clienteFacadeBean.error}" />
+			</f:metadata>
 
-		<!-- Modale Pagamento -->
-		<p:dialog id="paymentModal" header="Effettua un pagamento"
-			widgetVar="paymentDialog" modal="true" resizable="false" width="600">
-			<h:form id="paymentForm">
-				<p:card style="margin-top: 5px; margin-bottom: 20px;">
-					<!-- Titoli in jsf -->
-					<f:facet name="title">Payment Form</f:facet>
-					<f:facet name="subtitle">Inserire i dati per il pagamento</f:facet>
+			<p:growl id="growl" showDetail="true" autoUpdate="true" />
 
-					<p:panelGrid columns="3" layout="grid"
-						columnClasses="ui-grid-col-2, ui-grid-col-6, ui-grid-col-4">
+			<f:event listener="#{clienteFacadeBean.displayMessage}"
+				type="preRenderView" />
 
-						<p:outputLabel for="selectProject" value="Progetto" />
-						<p:selectOneMenu id="selectProject"
-							value="#{clienteFacadeBean.payment.idProgetto}">
-							<f:selectItems value="#{clienteFacadeBean.projects}"
-								var="project" itemValue="#{project.id}"
-								itemLabel="#{project.nomeProgetto}" />
-						</p:selectOneMenu>
-						<p:message for="selectProject" display="text" style="width: 100%" />
+			<!-- Container principale -->
+			<div class="container"
+				style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
 
-						<p:outputLabel for="cifra" value="Cifra" />
-						<p:inputNumber id="cifra" required="true"
-							value="#{clienteFacadeBean.payment.cifra}"
-							requiredMessage="Cifra richiesta" feedback="true" minValue="0" />
-						<p:message for="cifra" />
-
+				<!-- Card Benvenuto -->
+				<p:panel header="Benvenuto, #{clienteFacadeBean.user.username}"
+					styleClass="card shadow-sm mt-5">
+					<p:panelGrid columns="2" columnClasses="col-md-6,col-md-6"
+						styleClass="row mb-3">
+						<h:outputText value="Nome:" />
+						<h:outputText value="#{clienteFacadeBean.user.nome}" />
+						<h:outputText value="Cognome:" />
+						<h:outputText value="#{clienteFacadeBean.user.cognome}" />
+						<h:outputText value="Username:" />
+						<h:outputText value="#{clienteFacadeBean.user.username}" />
+						<h:outputText value="Email:" />
+						<h:outputText value="#{clienteFacadeBean.user.email}" />
+						<h:outputText value="Tentativi Errati:" />
+						<h:outputText value="#{clienteFacadeBean.user.tentativiFalliti}" />
+						<h:outputText value="Account Bloccato:" />
+						<h:outputText value="#{clienteFacadeBean.user.locked}" />
+						<h:outputText value="Data Creazione:" />
+						<h:outputText value="#{clienteFacadeBean.user.dataCreazione}" />
 					</p:panelGrid>
+				</p:panel>
 
-					<f:facet name="footer">
-						<p:commandButton value="Conferma Pagamento"
-							action="#{clienteFacadeBean.confirmPayment}"
-							update=":paymentForm" />
+				<!-- Progetti Associati -->
+				<p:panel styleClass="card shadow-sm mt-5">
+					<f:facet name="header">
+						<h4>Progetti Associati</h4>
 					</f:facet>
-				</p:card>
-			</h:form>
-		</p:dialog>
+					<div style="text-align: right; margin-bottom: 10px;">
+						<p:commandButton value="Nuovo Pagamento" styleClass="ui-button"
+							icon="pi pi-plus-circle" onclick="PF('paymentDialog').show();" />
+					</div>
+
+					<p:dataTable id="projectsTableContainer" var="project"
+						value="#{clienteFacadeBean.projects}"
+						styleClass="table table-hover">
+						<p:column headerText="ID">
+							<h:outputText value="#{project.id}" />
+						</p:column>
+						<p:column headerText="Nome">
+							<h:outputText value="#{project.nomeProgetto}" />
+						</p:column>
+						<p:column headerText="Stato">
+							<h:outputText value="#{project.stato}" />
+						</p:column>
+						<p:column headerText="Progressi">
+							<p:progressBar value="#{project.percentualeCompletamento}"
+								style="height: 15px; margin-top: 6px;" />
+						</p:column>
+						<p:column headerText="Fine Prevista">
+							<h:outputText value="#{project.dataFine}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+						<p:column headerText="Da versare">
+							<h:outputText
+								value="#{clienteFacadeBean.calcolaDaVersare(project.id)}" />
+						</p:column>
+						<p:column headerText="Pagamenti">
+							<p:commandButton
+								styleClass="rounded-button ui-button-warning ui-button-flat"
+								icon="pi pi-history" value="History"
+								action="#{clienteFacadeBean.showPaymentHistory(project.id)}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+
+				<!-- Modale Pagamento -->
+				<p:dialog id="paymentModal" header="Effettua un pagamento"
+					widgetVar="paymentDialog" modal="true" resizable="false"
+					width="600">
+					<h:form id="paymentForm">
+						<p:card style="margin-top: 5px; margin-bottom: 20px;">
+							<!-- Titoli in jsf -->
+							<f:facet name="title">Payment Form</f:facet>
+							<f:facet name="subtitle">Inserire i dati per il pagamento</f:facet>
+
+							<p:panelGrid columns="3" layout="grid"
+								columnClasses="ui-grid-col-2, ui-grid-col-6, ui-grid-col-4">
+
+								<p:outputLabel for="selectProject" value="Progetto" />
+								<p:selectOneMenu id="selectProject"
+									value="#{clienteFacadeBean.payment.idProgetto}">
+									<f:selectItems value="#{clienteFacadeBean.projects}"
+										var="project" itemValue="#{project.id}"
+										itemLabel="#{project.nomeProgetto}" />
+								</p:selectOneMenu>
+								<p:message for="selectProject" display="text"
+									style="width: 100%" />
+
+								<p:outputLabel for="cifra" value="Cifra" />
+								<p:inputNumber id="cifra" required="true"
+									value="#{clienteFacadeBean.payment.cifra}"
+									requiredMessage="Cifra richiesta" feedback="true" minValue="0" />
+								<p:message for="cifra" />
+
+							</p:panelGrid>
+
+							<f:facet name="footer">
+								<p:commandButton value="Conferma Pagamento"
+									action="#{clienteFacadeBean.confirmPayment}"
+									update=":paymentForm" />
+							</f:facet>
+						</p:card>
+					</h:form>
+				</p:dialog>
 
 
-	</div>
-	<ui:include src="/footer.xhtml" />
-</h:body>
+			</div>
+			<ui:include src="/footer.xhtml" />
+		</h:body>
+	</c:if>
+</c:if>
 </html>

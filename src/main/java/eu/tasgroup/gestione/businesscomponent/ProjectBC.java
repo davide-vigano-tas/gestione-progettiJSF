@@ -22,7 +22,7 @@ public class ProjectBC {
 	private UserDAO userDAO;
 
 	public ProjectBC() throws DAOException, NamingException {
-
+		userDAO = UserDAO.getFactory();
 		projectDAO = ProjectDAO.getFactory();
 	}
 
