@@ -81,13 +81,13 @@
 			</div>
 
 			<!-- Modale Pagamento -->
-			<p:dialog id="projectModal" header="Crea un nuovo progetto"
-				widgetVar="projectDialog" modal="true" resizable="false" width="800">
-				<h:form id="projectForm">
+			<p:dialog id="taskModal" header="Crea una nuova task"
+				widgetVar="taskDialog" modal="true" resizable="false" width="800">
+				<h:form id="taskForm">
 					<p:card style="margin-top: 5px; margin-bottom: 20px;">
 						<p:panelGrid columns="2" layout="grid"
 							columnClasses="ui-grid-col-4, ui-grid-col-8">
-							
+
 							<p:outputLabel for="progetto" value="Progetto" />
 							<p:selectOneMenu id="progetto"
 								value="#{projectManagerFacadeBean.task.idProgetto}">
@@ -104,40 +104,31 @@
 							<p:inputTextarea id="descrizione" rows="4" cols="33"
 								value="#{projectManagerFacadeBean.task.descrizione}" />
 
-							<p:outputLabel for="scadenza" value="Scadenza" />
-							<p:datePicker id="scadenza"
-								value="#{projectManagerFacadeBean.project.dataInizio}" />
-
-							<p:outputLabel for="end" value="Fine" />
-							<p:datePicker id="end"
-								value="#{projectManagerFacadeBean.project.dataFine}" />
-
-							<p:outputLabel for="budget" value="Budget" />
-							<p:inputNumber id="budget" required="true"
-								value="#{projectManagerFacadeBean.project.budget}"
-								requiredMessage="Budget del progetto" feedback="true"
-								minValue="0" />
-
-							<p:outputLabel for="selectCliente" value="Cliente" />
-							<p:selectOneMenu id="selectCliente"
-								value="#{projectManagerFacadeBean.project.idCliente}">
-								<f:selectItems value="#{projectManagerFacadeBean.clienti}"
-									var="cliente" itemValue="#{cliente.id}"
-									itemLabel="#{cliente.username}" />
+							<p:outputLabel for="selectDipendete" value="Dipendente" />
+							<p:selectOneMenu id="selectDipendete"
+								value="#{projectManagerFacadeBean.task.idDipendente}">
+								<f:selectItems value="#{projectManagerFacadeBean.dipendenti}"
+									var="dipendente" itemValue="#{dipendente.id}"
+									itemLabel="#{dipendente.username}" />
 							</p:selectOneMenu>
 
-							<p:outputLabel for="costo" value="Costo" />
-							<p:inputNumber id="costo" required="true"
-								value="#{projectManagerFacadeBean.project.costoProgetto}"
-								requiredMessage="Costo del progetto" feedback="true"
-								minValue="0" />
+							<p:outputLabel for="scadenza" value="Scadenza" />
+							<p:datePicker id="scadenza"
+								value="#{projectManagerFacadeBean.task.scadenza}" />
+
+							<p:outputLabel for="selectFase" value="Fase" />
+							<p:selectOneMenu id="selectFase"
+								value="#{projectManagerFacadeBean.task.fase}">
+								<f:selectItems value="#{projectManagerFacadeBean.fasi}"
+									var="fase" itemValue="#{fase}" itemLabel="#{fase}" />
+							</p:selectOneMenu>
 
 						</p:panelGrid>
 
 						<f:facet name="footer">
 							<p:commandButton value="Crea Progetto"
-								action="#{projectManagerFacadeBean.createProject()}"
-								update=":projectForm" />
+								action="#{projectManagerFacadeBean.createTask()}"
+								update=":taskForm" />
 						</f:facet>
 					</p:card>
 				</h:form>

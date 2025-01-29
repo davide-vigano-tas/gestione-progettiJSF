@@ -2,6 +2,7 @@ package eu.tasgroup.gestione.web.bean;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,12 +15,13 @@ import javax.inject.Named;
 import javax.naming.NamingException;
 
 import eu.tasgroup.gestione.architetture.dao.DAOException;
+import eu.tasgroup.gestione.businesscomponent.enumerated.Fase;
 import eu.tasgroup.gestione.businesscomponent.enumerated.Ruoli;
+import eu.tasgroup.gestione.businesscomponent.enumerated.StatoProgetto;
 import eu.tasgroup.gestione.businesscomponent.facade.ProjectManagerFacade;
 import eu.tasgroup.gestione.businesscomponent.model.Payment;
 import eu.tasgroup.gestione.businesscomponent.model.Project;
 import eu.tasgroup.gestione.businesscomponent.model.ProjectTask;
-import eu.tasgroup.gestione.businesscomponent.model.Timesheet;
 import eu.tasgroup.gestione.businesscomponent.model.User;
 
 @Named
@@ -35,7 +37,9 @@ public class ProjectManagerFacadeBean implements Serializable {
 	private ProjectTask task;
 	private List<Project> projects;
 	private List<User> clienti;
+	private List<User> dipendenti;
 	private List<ProjectTask> tasks;
+	private List<String> fasi = new ArrayList<String>();
 
 	private boolean success;
 	private boolean error;
@@ -45,6 +49,13 @@ public class ProjectManagerFacadeBean implements Serializable {
 
 	public ProjectManagerFacadeBean() throws DAOException, NamingException {
 		pf = ProjectManagerFacade.getInstance();
+
+		fasi.add(Fase.PLAN.name());
+		fasi.add(Fase.ANALISI.name());
+		fasi.add(Fase.DESIGN.name());
+		fasi.add(Fase.BUILD.name());
+		fasi.add(Fase.TEST.name());
+		fasi.add(Fase.DEPLOY.name());
 	}
 
 	@PostConstruct
@@ -56,6 +67,7 @@ public class ProjectManagerFacadeBean implements Serializable {
 			this.project = new Project();
 			this.task = new ProjectTask();
 			this.clienti = Arrays.asList(pf.getByRole(Ruoli.CLIENTE));
+			this.dipendenti = Arrays.asList(pf.getByRole(Ruoli.DIPENDENTE));
 			this.tasks = Arrays.asList(pf.getAllProjectTask());
 
 		} catch (DAOException | NamingException e) {
@@ -135,6 +147,22 @@ public class ProjectManagerFacadeBean implements Serializable {
 		this.tasks = tasks;
 	}
 
+	public List<User> getDipendenti() {
+		return dipendenti;
+	}
+
+	public void setDipendenti(List<User> dipendenti) {
+		this.dipendenti = dipendenti;
+	}
+
+	public List<String> getFasi() {
+		return fasi;
+	}
+
+	public void setFasi(List<String> fasi) {
+		this.fasi = fasi;
+	}
+
 	public void createProject() {
 		try {
 			System.out.println("Progetto: " + project);
@@ -177,7 +205,7 @@ public class ProjectManagerFacadeBean implements Serializable {
 					"Errore durante la generazione del progetto"));
 		}
 	}
-	
+
 	public void displayMessageTask() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (success) {
@@ -196,20 +224,26 @@ public class ProjectManagerFacadeBean implements Serializable {
 		try {
 			if (task != null) {
 				pf.createOrUpdateProjectTask(task);
+
+				// Aggiorno stato progetto
+				Project p = pf.getProjectById(task.getIdProgetto());
+				p.setStato(StatoProgetto.IN_PROGRESS);
+				pf.createOrUpdateProject(p);
+				projects = pf.getProjectsByResponsabile(user);
+
+				// Aggiorno le task
 				tasks = Arrays.asList(pf.getAllProjectTask());
-				FacesContext.getCurrentInstance().getExternalContext()
-						.redirect("/" + UserSessionBean.getServletContextName()
-								+ "/projectManager/pm-task.xhtml?success=true");
+
+				FacesContext.getCurrentInstance().getExternalContext().redirect(
+						"/" + UserSessionBean.getServletContextName() + "/projectManager/pm-task.xhtml?success=true");
 			} else {
-				FacesContext.getCurrentInstance().getExternalContext()
-						.redirect("/" + UserSessionBean.getServletContextName()
-								+ "/projectManager/pm-task.xhtml?error=true");
+				FacesContext.getCurrentInstance().getExternalContext().redirect(
+						"/" + UserSessionBean.getServletContextName() + "/projectManager/pm-task.xhtml?error=true");
 			}
 		} catch (NamingException | DAOException e) {
 			try {
-				FacesContext.getCurrentInstance().getExternalContext()
-						.redirect("/" + UserSessionBean.getServletContextName()
-								+ "/projectManager/pm-task.xhtml?error=true");
+				FacesContext.getCurrentInstance().getExternalContext().redirect(
+						"/" + UserSessionBean.getServletContextName() + "/projectManager/pm-task.xhtml?error=true");
 			} catch (IOException ex) {
 				ex.printStackTrace();
 			}
