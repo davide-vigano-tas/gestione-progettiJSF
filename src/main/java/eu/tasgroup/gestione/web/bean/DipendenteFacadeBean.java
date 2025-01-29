@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.mail.MessagingException;
 import javax.naming.NamingException;
 
 import eu.tasgroup.gestione.architetture.dao.DAOException;
@@ -23,6 +24,7 @@ import eu.tasgroup.gestione.businesscomponent.model.Skill;
 import eu.tasgroup.gestione.businesscomponent.model.Ticket;
 import eu.tasgroup.gestione.businesscomponent.model.Timesheet;
 import eu.tasgroup.gestione.businesscomponent.model.User;
+import eu.tasgroup.gestione.businesscomponent.utility.EmailUtil;
 
 @Named
 @RequestScoped
@@ -138,7 +140,7 @@ public class DipendenteFacadeBean {
 			return "dip-skills?faces-redirect=true";
 	}
 	
-	public String updateStatoTask(long taskId, String statoTask, String username) throws DAOException, NamingException {
+	public String updateStatoTask(long taskId, String statoTask, String username) throws DAOException, NamingException, MessagingException {
 		Long id = taskId;
 		StatoTask stato = StatoTask.valueOf(statoTask.toUpperCase());
 
@@ -187,7 +189,7 @@ public class DipendenteFacadeBean {
 				                    + "<div style='max-width:600px;margin:0 auto;background:#ffffff;padding:20px;border-radius:8px;'>"
 				                    + "<h1 style='text-align:center;color:#007bff;'>Fase: "+fase+" completata</h1>"
 				                    + "</div></div></body></html>";
-				        	//EmailUtil.sendEmail(df.getById(df.getProjectById(task.getIdProgetto()).getIdResponsabile()).getEmail(), "Fase completata", emailContent);
+				        	EmailUtil.sendEmail(df.getById(df.getProjectById(task.getIdProgetto()).getIdResponsabile()).getEmail(), "Fase completata", emailContent);
 						}
 					} else {
 						percentualeParziale = 10 / tasks.size();
@@ -204,7 +206,7 @@ public class DipendenteFacadeBean {
 				                    + "<div style='max-width:600px;margin:0 auto;background:#ffffff;padding:20px;border-radius:8px;'>"
 				                    + "<h1 style='text-align:center;color:#007bff;'>Fase: "+fase+" completata</h1>"
 				                    + "</div></div></body></html>";
-				        	//EmailUtil.sendEmail(df.getById(df.getProjectById(task.getIdProgetto()).getIdResponsabile()).getEmail(), "Fase completata", emailContent);
+				        	EmailUtil.sendEmail(df.getById(df.getProjectById(task.getIdProgetto()).getIdResponsabile()).getEmail(), "Fase completata", emailContent);
 						}
 					}
 				}
