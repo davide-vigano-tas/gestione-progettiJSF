@@ -168,7 +168,9 @@ public class UserSessionBean implements Serializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+	    FacesContext context = FacesContext.getCurrentInstance();
+	    ExternalContext externalContext = context.getExternalContext();
+	    externalContext.invalidateSession();
 		return "login?faces-redirect=true";
 	}
 
