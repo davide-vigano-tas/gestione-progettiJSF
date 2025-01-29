@@ -23,8 +23,7 @@ import eu.tasgroup.gestione.businesscomponent.model.Skill;
 import eu.tasgroup.gestione.businesscomponent.model.Ticket;
 import eu.tasgroup.gestione.businesscomponent.model.Timesheet;
 import eu.tasgroup.gestione.businesscomponent.model.User;
-import eu.tasgroup.gestione.businesscomponent.security.EscapeHTML;
-import eu.tasgroup.gestione.businesscomponent.utility.EmailUtil;
+
 @Named
 @RequestScoped
 public class DipendenteFacadeBean {
