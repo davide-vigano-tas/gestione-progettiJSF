@@ -6,9 +6,18 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 	
-	 <f:metadata>
+<f:metadata>
+	<c:if test="#{userSessionBean.username == null}">
+	
+	 
     <f:viewAction action="#{userSessionBean.isNotLoggedRedirect()}" />
-</f:metadata>
+   
+
+	</c:if>
+	<c:if test="#{userSessionBean.username != null}">
+	 <f:viewAction action="#{userSessionBean.logout()}" rendered="#{userSessionBean.hasRole('ADMIN') == false}" />
+	</c:if>
+	</f:metadata>
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<title>Admin Home</title>
