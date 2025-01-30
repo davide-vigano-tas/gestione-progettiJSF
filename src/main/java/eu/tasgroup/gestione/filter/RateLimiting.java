@@ -24,7 +24,7 @@ public class RateLimiting extends HttpFilter implements Filter {
 	public void init(FilterConfig fConfig) throws ServletException {
 		//Il client se supera richeste al secondo viene bloccato per 5 secondi
 		//Cambiamo per provare
-		rateLimiter = new RateLimiter(10, 1, 5);
+		rateLimiter = new RateLimiter(15, 1, 5);
 	}
 
 

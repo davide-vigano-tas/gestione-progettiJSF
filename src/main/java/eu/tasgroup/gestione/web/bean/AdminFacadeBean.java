@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -179,6 +180,11 @@ public class AdminFacadeBean implements Serializable{
 			ruolo.setIdUser(user.getId());
 			ruolo.setRole(Ruoli.valueOf(role));
 			af.addRole(user, ruolo);
+			AuditLog log = new AuditLog();
+			log.setData(new Date());
+			log.setOperazione("Aggiunto "+role+" "+user.getUsername());
+			log.setUtente(userSessionBean.getUsername());
+			af.createOrupdateAuditLog(log);
 	        // Redirect to another page
 	        FacesContext.getCurrentInstance().getExternalContext()
 	        .redirect("/"+UserSessionBean.getServletContextName()+"/admin/users.xhtml");
@@ -265,6 +271,12 @@ public class AdminFacadeBean implements Serializable{
 				ruolo.setIdUser(userDetails.getId());
 				ruolo.setRole(Ruoli.valueOf(adminUsersManaging.getRoleToAdd()));
 				af.addRole(userDetails, ruolo);
+				AuditLog log = new AuditLog();
+				log.setData(new Date());
+				log.setOperazione("Aggiunto ruolo : "+Ruoli.valueOf(adminUsersManaging.getRoleToDelete()).name()+","
+						+ " a: "+userDetails.getUsername());
+				log.setUtente(userSessionBean.getUsername());
+				af.createOrupdateAuditLog(log);
 				Role[] roles = getRolesById(userDetails.getId());
 				List<String> selectedUserRoles = new ArrayList<String>();
 				for(Role r : roles) {
@@ -304,6 +316,12 @@ public class AdminFacadeBean implements Serializable{
 	public void deleteRoleFromCurrent() throws DAOException, NamingException {
 		User userDetails = adminUsersManaging.getUserDetails();
 		af.deleteRole(Ruoli.valueOf(adminUsersManaging.getRoleToDelete()), userDetails);
+		AuditLog log = new AuditLog();
+		log.setData(new Date());
+		log.setOperazione("Eliminato ruolo : "+Ruoli.valueOf(adminUsersManaging.getRoleToDelete()).name()+","
+				+ " da: "+userDetails.getUsername());
+		log.setUtente(userSessionBean.getUsername());
+		af.createOrupdateAuditLog(log);
 		Role[] roles = getRolesById(userDetails.getId());
 		List<String> selectedUserRoles = new ArrayList<String>();
 		for(Role r : roles) {
@@ -346,6 +364,11 @@ public class AdminFacadeBean implements Serializable{
 		Skill nuova = new Skill();
 		nuova.setTipo(Skills.valueOf(skillToAdd));
 		af.createSkill(nuova);
+		AuditLog log = new AuditLog();
+		log.setData(new Date());
+		log.setOperazione("Aggiunta skill : "+Skills.valueOf(skillToAdd));
+		log.setUtente(userSessionBean.getUsername());
+		af.createOrupdateAuditLog(log);
 		return "skills?faces-redirect=true";
 	}
 	/*-------------------------------------- skill in base all'id*/
