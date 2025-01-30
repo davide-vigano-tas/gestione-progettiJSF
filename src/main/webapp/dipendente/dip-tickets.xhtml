@@ -75,27 +75,25 @@
             <ui:repeat value="#{dipendenteFacadeBean.tasks}" var="task">
 	        </ui:repeat>
 	        
-	        <h:form>
     <div class="card">
-         <p:dataTable var="ticket" value="#{dipendenteFacadeBean.tickets}">
+         <p:dataTable var="ticketTable" value="#{dipendenteFacadeBean.dip_tickets}">
                 <p:column headerText="Ticket ID">
-                    <h:outputText value="#{ticket.id}" />
+                    <h:outputText value="#{ticketTable.id}" />
                 </p:column>
                 <p:column headerText="Titolo">
-                    <h:outputText value="#{ticket.title}" />
+                    <h:outputText value="#{ticketTable.title}" />
                 </p:column>
                 <p:column headerText="Descrizione">
-                    <h:outputText value="#{ticket.description}" />
+                    <h:outputText value="#{ticketTable.description}" />
                 </p:column>
                 <p:column headerText="Creazione">
-                    <h:outputText value="#{ticket.created_at}" />
+                    <h:outputText value="#{ticketTable.created_at}" />
                 </p:column>
                 <p:column headerText="Chiusura">
-                    <h:outputText value="#{ticket.closed_at}" />
+                    <h:outputText value="#{ticketTable.closed_at}" />
                 </p:column>
             </p:dataTable>
         </div>
-</h:form>
         </p:panel>
     </div>
     <ui:include src="/footer.xhtml"/>

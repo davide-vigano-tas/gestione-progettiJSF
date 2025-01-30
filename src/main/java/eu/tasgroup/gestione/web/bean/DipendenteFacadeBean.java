@@ -14,12 +14,16 @@ import javax.naming.NamingException;
 
 import eu.tasgroup.gestione.architetture.dao.DAOException;
 import eu.tasgroup.gestione.businesscomponent.enumerated.Fase;
+import eu.tasgroup.gestione.businesscomponent.enumerated.Ruoli;
 import eu.tasgroup.gestione.businesscomponent.enumerated.StatoProgetto;
 import eu.tasgroup.gestione.businesscomponent.enumerated.StatoTask;
+import eu.tasgroup.gestione.businesscomponent.facade.AdminFacade;
 import eu.tasgroup.gestione.businesscomponent.facade.DipendenteFacade;
+import eu.tasgroup.gestione.businesscomponent.facade.ProjectManagerFacade;
 import eu.tasgroup.gestione.businesscomponent.model.AuditLog;
 import eu.tasgroup.gestione.businesscomponent.model.Project;
 import eu.tasgroup.gestione.businesscomponent.model.ProjectTask;
+import eu.tasgroup.gestione.businesscomponent.model.Role;
 import eu.tasgroup.gestione.businesscomponent.model.Skill;
 import eu.tasgroup.gestione.businesscomponent.model.Ticket;
 import eu.tasgroup.gestione.businesscomponent.model.Timesheet;
@@ -35,6 +39,7 @@ public class DipendenteFacadeBean {
 	private Timesheet timesheet;
 	private long idSkill;
 	private Project project;
+	private Ticket ticket;
 	private List<ProjectTask> tasks;
 	private List<Project> dip_projects;
 	private List<Timesheet> timesheets;
@@ -59,7 +64,7 @@ public class DipendenteFacadeBean {
 			this.dip_skills = getSkillsByDipendente(user.getId());
 			this.dip_projects = getProjectByDipendente(user.getId());
 			this.general_skills = getAllSkills();
-			//this.dip_tickets = getTicketsByDipendente(user.getId());
+			this.dip_tickets = getTicketsByDipendente(user.getId());
 		} catch (DAOException | NamingException e) {
 			e.printStackTrace();
 		}
@@ -232,6 +237,46 @@ public class DipendenteFacadeBean {
 		return "dip-tasks?faces-redirect=true";
 	}
 	
+	
+	public String insertTicket(Ticket ticket, String usernameDip) throws DAOException, NamingException {
+		String titolo = ticket.getTitle();
+		String descrizione = ticket.getDescription();
+		String username =usernameDip;
+		if(username == null) {
+			return "/index?faces-redirect=true";
+		}
+		
+			User user = AdminFacade.getInstance().getByUsername(username);
+			Role[] roles = AdminFacade.getInstance().getRolesByUsername(username);
+			Ruoli ruolo = null;
+			if(Arrays.asList(roles).stream().anyMatch(r->r.getRole().equals(Ruoli.DIPENDENTE)))
+				ruolo = Ruoli.DIPENDENTE;
+			else ruolo = Ruoli.PROJECT_MANAGER;
+			if(titolo == null || descrizione == null) {
+				if(ruolo.equals(Ruoli.DIPENDENTE)) 
+					return	"dip-ticket-form?error=invalid_values?faces-redirect=true";
+				else 
+					return "ticket-form?error=invalid_values?faces-redirect=true";
+			}
+			
+			Ticket t = new Ticket();
+			t.setTitle(titolo);
+			t.setDescription(descrizione);
+			t.setOpener(user.getId());
+			t.setCreated_at(new Date());
+			ProjectManagerFacade.getInstance().createorUpdateTicket(t);
+			
+			AuditLog log = new AuditLog();
+			log.setData(new Date());
+			log.setOperazione("Apertura ticket");
+			log.setUtente(username);
+			AdminFacade.getInstance().createOrupdateAuditLog(log);
+			if(ruolo.equals(Ruoli.DIPENDENTE)) 
+				return "dip-tickets?faces-redirect=true";
+			else 
+				return "tickets?faces-redirect=true";
+	}
+		
 	//-----------------------------------------------------------------------------------------------
 	public String getProjectNameByIdProject(long id) throws DAOException, NamingException{
 		return df.getProjectById(id).getNomeProgetto();
@@ -336,6 +381,16 @@ public class DipendenteFacadeBean {
 	public void setGeneral_skills(List<Skill> general_skills) {
 		this.general_skills = general_skills;
 	}
+
+	public Ticket getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(Ticket ticket) {
+		this.ticket = ticket;
+	}
+
+
 
 
 	
