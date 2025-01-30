@@ -61,8 +61,8 @@
             <h:form id="formModal">
                 <!-- CSRF Token -->
                 <p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-2 ui-grid-col-4 ui-grid-col-4">
-                
-                    <p:commandButton value="Si"
+                	<h:outputText value="Azione irreversibile"></h:outputText>
+                    <p:commandButton value="Si, elimina"
                      action="#{adminFacadeBean.deleteAuditLog(adminFacadeBean.getAuditLogById(a.id))}"
                                      update="formModal" icon="fa fa-times" styleClass="ui-button-danger" />
                 </p:panelGrid>
