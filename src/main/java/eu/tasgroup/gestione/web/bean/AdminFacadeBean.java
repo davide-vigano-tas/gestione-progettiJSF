@@ -499,8 +499,9 @@ public class AdminFacadeBean implements Serializable{
 	}
 	
 	/*-------------------------------Delete auditLog*/
-	public void deleteAuditLog(AuditLog log) throws DAOException, NamingException {
+	public String deleteAuditLog(AuditLog log) throws DAOException, NamingException {
 		af.deleteAuditLog(log);
+		return "auditlogs?faces-redirect=true";
 	}
 	
 	public AuditLog getAuditLogById(long id) throws DAOException, NamingException {

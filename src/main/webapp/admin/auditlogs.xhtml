@@ -53,7 +53,22 @@
                 <p:column headerText="Operazione" >
                 <h:outputText value="#{a.operazione}" />
             </p:column>
-      
+            <p:column headerText="Elimina">
+             <p:commandButton  icon="pi pi-trash" styleClass="ui-button-danger"
+                         update="closeModal" oncomplete="PF('closeModal').show()" />
+                         <p:dialog header="Vuoi eliminare il log?" widgetVar="closeModal" modal="true" id="closeModal"
+                  resizable="false" width="800px">
+            <h:form id="formModal">
+                <!-- CSRF Token -->
+                <p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-2 ui-grid-col-4 ui-grid-col-4">
+                
+                    <p:commandButton value="Si"
+                     action="#{adminFacadeBean.deleteAuditLog(adminFacadeBean.getAuditLogById(a.id))}"
+                                     update="formModal" icon="fa fa-times" styleClass="ui-button-danger" />
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+      </p:column>
         </p:dataTable>
 		
 
