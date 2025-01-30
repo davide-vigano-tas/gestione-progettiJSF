@@ -39,10 +39,17 @@
         }
         .link-style {
             color: #03122F !important;
-            border-radius: 25px;
+            border-radius: 25px !important;
             min-width: 7.5em;
             border: 0.5rem solid rgba(251,123,6,1) !important;
-            transition: 0.7s;
+            transition: 0.7s !important;
+            aspect-ratio: 1 / 1;
+            background-color: white !important;
+            
+            display: flex !important;
+		    flex-direction: column !important;
+		    align-items: center !important;
+		    justify-content: center !important;
         }
         .link-style:hover {
             color: #03122F !important;
@@ -51,10 +58,30 @@
             
         }
         
-        .riga{
-        	display: flex;
+        .ui-panelgrid  .ui-grid-responsive {
+        	text-align: center;
+        	align-items: center;
+	    }
+	    
+	    .showcase-text-align-center {
+	    	margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+	    }
+		
+		.ui-panelgrid-cell {
+			display: flex;
+			align-items: center;
         	justify-content: space-around;
-        }
+		}
+		
+	    .customPanelGrid .ui-panelgrid-content {
+	        align-items: center;
+	    }
+        
     }
     </style>
 </h:head>
@@ -74,30 +101,27 @@
 
             <hr/>
 
-            <p:panelGrid styleClass="content-section" columns="3">
+            <p:panelGrid styleClass="showcase-text-align-center" columns="4" layout="grid" columnClasses="ui-g-12 ui-md-6 ui-lg-4, ui-g-12 ui-md-6 ui-lg-4,ui-g-12 ui-md-6 ui-lg-4">
             	<p:row styleClass="riga">
             		
-            		<p:column styleClass="link-style">
-            		<h:link outcome="/dipendente/dip-projects.xhtml">
-		                    <i class="pi pi-code" style="font-size: 2rem;"></i>
-		                    <br></br>
-		                    <strong>Progetti</strong>
-            		</h:link>
+            		<p:column >
+	            		<h:link outcome="/dipendente/dip-projects.xhtml">
+		            		<p:button styleClass="link-style" value="Progetti" icon="pi pi-code"/>
+	            		</h:link>
             		</p:column>
-            		<p:column styleClass="link-style">
-            		<h:link outcome="/dipendente/dip-tasks.xhtml">
-		                    <i class="pi pi-code" style="font-size: 2rem;"></i>
-		                    <br></br>
-		                    <strong>Tasks</strong>
-            		</h:link>
+            		
+            		<p:column>
+	            		<h:link outcome="/dipendente/dip-tasks.xhtml">
+	            			<p:button  styleClass="link-style vertical-button" value ="Tasks" icon="pi pi-code"/>
+	            		</h:link>
             		</p:column>
-            		<p:column styleClass="link-style">
-            		<h:link outcome="/dipendente/dip-timesheets.xhtml">
-		                    <i class="pi pi-calendar" style="font-size: 2rem;"></i>
-		                    <br></br>
-		                    <strong>Timesheet</strong>
-            		</h:link>
+            		
+            		<p:column>
+            			<h:link outcome="/dipendente/dip-timesheets.xhtml">
+	            			<p:button  styleClass="link-style" value="Timesheet" icon="pi pi-calendar"/>
+	            		</h:link>
             		</p:column>
+            		
             	</p:row>
 
 
