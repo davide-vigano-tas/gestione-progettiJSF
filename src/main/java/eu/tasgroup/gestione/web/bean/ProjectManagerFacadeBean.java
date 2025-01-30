@@ -22,6 +22,7 @@ import eu.tasgroup.gestione.businesscomponent.facade.ProjectManagerFacade;
 import eu.tasgroup.gestione.businesscomponent.model.Payment;
 import eu.tasgroup.gestione.businesscomponent.model.Project;
 import eu.tasgroup.gestione.businesscomponent.model.ProjectTask;
+import eu.tasgroup.gestione.businesscomponent.model.Timesheet;
 import eu.tasgroup.gestione.businesscomponent.model.User;
 
 @Named
@@ -40,6 +41,7 @@ public class ProjectManagerFacadeBean implements Serializable {
 	private List<User> dipendenti;
 	private List<ProjectTask> tasks;
 	private List<String> fasi = new ArrayList<String>();
+	private List<Timesheet> timesheets;
 
 	private boolean success;
 	private boolean error;
@@ -69,6 +71,7 @@ public class ProjectManagerFacadeBean implements Serializable {
 			this.clienti = Arrays.asList(pf.getByRole(Ruoli.CLIENTE));
 			this.dipendenti = Arrays.asList(pf.getByRole(Ruoli.DIPENDENTE));
 			this.tasks = Arrays.asList(pf.getAllProjectTask());
+			this.timesheets = Arrays.asList(pf.getAllTimesheet());
 
 		} catch (DAOException | NamingException e) {
 			e.printStackTrace();
@@ -163,6 +166,14 @@ public class ProjectManagerFacadeBean implements Serializable {
 		this.fasi = fasi;
 	}
 
+	public List<Timesheet> getTimesheets() {
+		return timesheets;
+	}
+
+	public void setTimesheets(List<Timesheet> timesheets) {
+		this.timesheets = timesheets;
+	}
+
 	public void createProject() {
 		try {
 			System.out.println("Progetto: " + project);
@@ -249,6 +260,41 @@ public class ProjectManagerFacadeBean implements Serializable {
 			}
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getDipendenteByID(long id) {
+		try {
+			return pf.getProjectManagerById(id).getUsername();
+		} catch (DAOException | NamingException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String getProjectByID(long id) {
+		try {
+			return pf.getProjectById(id).getNomeProgetto();
+		} catch (DAOException | NamingException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public String getTaskByID(long id) {
+		try {
+			return pf.getProjectTaskByID(id).getNomeTask();
+		} catch (DAOException | NamingException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public void approva(long id) {
+		try {
+			pf.approvaTimesheet(id, true);
+		} catch (DAOException | NamingException e) {
 			e.printStackTrace();
 		}
 	}

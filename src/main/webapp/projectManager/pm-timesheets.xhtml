@@ -31,17 +31,6 @@
 
 			<f:viewAction action="#{projectManagerFacadeBean.init}" />
 
-			<f:metadata>
-				<f:viewParam name="success"
-					value="#{projectManagerFacadeBean.success}" />
-				<f:viewParam name="error" value="#{projectManagerFacadeBean.error}" />
-			</f:metadata>
-
-			<p:growl id="growl" showDetail="true" autoUpdate="true" />
-
-			<f:event listener="#{projectManagerFacadeBean.displayMessage}"
-				type="preRenderView" />
-
 			<!-- Container principale -->
 			<div class="container"
 				style="max-width: 1200px; margin: 0 auto; padding: 2rem;">
@@ -49,101 +38,44 @@
 				<!-- Progetti Associati -->
 				<p:panel styleClass="card shadow-sm" style="margin-top: 15px;">
 					<f:facet name="header">
-						<h4>Progetti Associati</h4>
+						<h4>Lista Time Sheets</h4>
 					</f:facet>
-					<div style="text-align: right; margin-bottom: 10px;">
-						<p:commandButton value="Nuovo Progetto" styleClass="ui-button"
-							icon="pi pi-plus-circle" onclick="PF('projectDialog').show();" />
-					</div>
 
-					<p:dataTable id="projectsTableContainer" var="project"
-						value="#{projectManagerFacadeBean.projects}"
+					<p:dataTable id="timeSheetTableContainer" var="timeSheet"
+						value="#{projectManagerFacadeBean.timesheets}"
 						styleClass="table table-hover">
 						<p:column headerText="ID">
-							<h:outputText value="#{project.id}" />
+							<h:outputText value="#{timeSheet.id}" />
 						</p:column>
-						<p:column headerText="Nome">
-							<h:outputText value="#{project.nomeProgetto}" />
+						<p:column headerText="Dipendente">
+							<h:outputText
+								value="#{projectManagerFacadeBean.getDipendenteByID(timeSheet.idDipendente)}" />
 						</p:column>
-						<p:column headerText="Stato">
-							<h:outputText value="#{project.stato}" />
+						<p:column headerText="Progetto">
+							<h:outputText
+								value="#{projectManagerFacadeBean.getProjectByID(timeSheet.idProgetto)}" />
 						</p:column>
-						<p:column headerText="Progressi">
-							<p:progressBar value="#{project.percentualeCompletamento}"
-								style="height: 15px; margin-top: 6px;" />
+						<p:column headerText="Task">
+							<h:outputText
+								value="#{projectManagerFacadeBean.getTaskByID(timeSheet.idTask)}" />
 						</p:column>
-						<p:column headerText="Data Inizio">
-							<h:outputText value="#{project.dataInizio}">
+						<p:column headerText="Ore Lavorate">
+							<h:outputText value="#{timeSheet.oreLavorate}" />
+						</p:column>
+						<p:column headerText="Data">
+							<h:outputText value="#{project.data}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
 						</p:column>
-						<p:column headerText="Fine Prevista">
-							<h:outputText value="#{project.dataFine}">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:outputText>
-						</p:column>
-						<p:column headerText="Budjet previsto">
-							<h:outputText value="#{project.budget}" />
+						<p:column headerText="Approva">
+							<p:commandButton
+								styleClass="ui-button-success"
+								icon="pi pi-history" value="Approva"
+								action="#{projectManagerFacadeBean.approva(timeSheet.id)}" />
 						</p:column>
 					</p:dataTable>
 				</p:panel>
 			</div>
-
-			<!-- Modale Pagamento -->
-			<p:dialog id="projectModal" header="Crea un nuovo progetto"
-				widgetVar="projectDialog" modal="true" resizable="false" width="800">
-				<h:form id="projectForm">
-					<p:card style="margin-top: 5px; margin-bottom: 20px;">
-						<p:panelGrid columns="2" layout="grid"
-							columnClasses="ui-grid-col-4, ui-grid-col-8">
-
-							<p:outputLabel for="nome" value="Nome" />
-							<p:inputText id="nome"
-								value="#{projectManagerFacadeBean.project.nomeProgetto}" />
-
-							<p:outputLabel for="descrizione" value="Descrizione" />
-							<p:inputTextarea id="descrizione" rows="4" cols="33"
-								value="#{projectManagerFacadeBean.project.descrizione}" />
-
-							<p:outputLabel for="
-						start" value="Inizio" />
-							<p:datePicker id="start"
-								value="#{projectManagerFacadeBean.project.dataInizio}" />
-
-							<p:outputLabel for="end" value="Fine" />
-							<p:datePicker id="end"
-								value="#{projectManagerFacadeBean.project.dataFine}" />
-
-							<p:outputLabel for="budget" value="Budget" />
-							<p:inputNumber id="budget" required="true"
-								value="#{projectManagerFacadeBean.project.budget}"
-								requiredMessage="Budget del progetto" feedback="true"
-								minValue="0" />
-
-							<p:outputLabel for="selectCliente" value="Cliente" />
-							<p:selectOneMenu id="selectCliente"
-								value="#{projectManagerFacadeBean.project.idCliente}">
-								<f:selectItems value="#{projectManagerFacadeBean.clienti}"
-									var="cliente" itemValue="#{cliente.id}"
-									itemLabel="#{cliente.username}" />
-							</p:selectOneMenu>
-
-							<p:outputLabel for="costo" value="Costo" />
-							<p:inputNumber id="costo" required="true"
-								value="#{projectManagerFacadeBean.project.costoProgetto}"
-								requiredMessage="Costo del progetto" feedback="true"
-								minValue="0" />
-
-						</p:panelGrid>
-
-						<f:facet name="footer">
-							<p:commandButton value="Crea Progetto"
-								action="#{projectManagerFacadeBean.createProject()}"
-								update=":projectForm" />
-						</f:facet>
-					</p:card>
-				</h:form>
-			</p:dialog>
 			<ui:include src="/footer.xhtml" />
 		</h:body>
 	</c:if>
