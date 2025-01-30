@@ -291,11 +291,28 @@ public class ProjectManagerFacadeBean implements Serializable {
 		}
 	}
 
-	public void approva(long id) {
+	public void approva(Long id) {
+		System.out.println("Accettato " + id);
 		try {
 			pf.approvaTimesheet(id, true);
-		} catch (DAOException | NamingException e) {
+			this.timesheets = Arrays.asList(pf.getAllTimesheet()); // Aggiorna la lista
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Successo", "Timesheet approvato"));
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	public void rifiuta(Long id) {
+		System.out.println("Rifiutato " + id);
+		try {
+			pf.approvaTimesheet(id, false);
+			this.timesheets = Arrays.asList(pf.getAllTimesheet()); // Aggiorna la lista
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Successo", "Timesheet rifiutato"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }

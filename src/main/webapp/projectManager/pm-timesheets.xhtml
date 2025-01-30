@@ -56,22 +56,33 @@
 								value="#{projectManagerFacadeBean.getProjectByID(timeSheet.idProgetto)}" />
 						</p:column>
 						<p:column headerText="Task">
-							<h:outputText
-								value="#{projectManagerFacadeBean.getTaskByID(timeSheet.idTask)}" />
+							<h:outputText value="#{timeSheet.idTask}" />
 						</p:column>
 						<p:column headerText="Ore Lavorate">
 							<h:outputText value="#{timeSheet.oreLavorate}" />
 						</p:column>
 						<p:column headerText="Data">
-							<h:outputText value="#{project.data}">
+							<h:outputText value="#{timeSheet.data}">
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:outputText>
 						</p:column>
+						<p:column headerText="Stato">
+							<h:outputText value="#{timeSheet.approvato}" />
+						</p:column>
 						<p:column headerText="Approva">
-							<p:commandButton
-								styleClass="ui-button-success"
-								icon="pi pi-history" value="Approva"
-								action="#{projectManagerFacadeBean.approva(timeSheet.id)}" />
+							<h:form id="formTimesheet">
+								<p:commandButton icon="pi pi-check"
+									styleClass="rounded-button ui-button-flat ui-button-success"
+									action="#{projectManagerFacadeBean.approva(timeSheet.id)}"
+									update="timeSheetTableContainer formTimesheet" ajax="true"
+									style="margin-right: 5px;" />
+
+								<p:commandButton icon="pi pi-times"
+									styleClass="rounded-button ui-button-flat ui-button-danger"
+									action="#{projectManagerFacadeBean.rifiuta(timeSheet.id)}"
+									update="timeSheetTableContainer formTimesheet" ajax="true" />
+
+							</h:form>
 						</p:column>
 					</p:dataTable>
 				</p:panel>
