@@ -15,7 +15,7 @@
 
 	</c:if>
 	<c:if test="#{userSessionBean.username != null}">
-	 <f:viewAction action="#{userSessionBean.logout()}" rendered="#{userSessionBean.hasRole('ADMIN') == false}" />
+	 <f:viewAction action="#{userSessionBean.logout('ADMIN')}"  />
 	</c:if>
 	</f:metadata>
 <c:if test="#{userSessionBean.username != null}">

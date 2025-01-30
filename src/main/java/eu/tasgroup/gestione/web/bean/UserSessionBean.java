@@ -251,12 +251,20 @@ public class UserSessionBean implements Serializable {
 
 	public void logout() throws IOException {
 		  // Invalida la sessione corrente
+		System.err.println("Logout");
 	    FacesContext context = FacesContext.getCurrentInstance();
 	    ExternalContext externalContext = context.getExternalContext();
 	    externalContext.invalidateSession();
 
 	    // Reindirizza alla pagina di login
 	    externalContext.redirect("/" + getServletContextName() + "/login.xhtml?faces-redirect=true");
+	}
+	
+	public void logout(String role) throws IOException, DAOException, NamingException {
+		  // Invalida la sessione corrente
+		if(!hasRole(Ruoli.valueOf(role))) {
+			logout();
+		}
 	}
 
 	public String getPassword() {
