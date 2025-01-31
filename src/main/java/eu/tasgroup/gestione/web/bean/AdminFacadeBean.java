@@ -362,13 +362,16 @@ public class AdminFacadeBean implements Serializable{
 	}
 	public String addNewSkill() throws DAOException, NamingException {
 		Skill nuova = new Skill();
-		nuova.setTipo(Skills.valueOf(skillToAdd));
-		af.createSkill(nuova);
-		AuditLog log = new AuditLog();
-		log.setData(new Date());
-		log.setOperazione("Aggiunta skill : "+Skills.valueOf(skillToAdd));
-		log.setUtente(userSessionBean.getUsername());
-		af.createOrupdateAuditLog(log);
+		Skill[] present = af.getSkillsByTipo(Skills.valueOf(skillToAdd));
+		if(present.length == 0) {
+			nuova.setTipo(Skills.valueOf(skillToAdd));
+			af.createSkill(nuova);
+			AuditLog log = new AuditLog();
+			log.setData(new Date());
+			log.setOperazione("Aggiunta skill : "+Skills.valueOf(skillToAdd));
+			log.setUtente(userSessionBean.getUsername());
+			af.createOrupdateAuditLog(log);
+		}
 		return "skills?faces-redirect=true";
 	}
 	/*-------------------------------------- skill in base all'id*/
